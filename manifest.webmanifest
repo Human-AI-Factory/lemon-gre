@@ -1,0 +1,18 @@
+{
+  "name": "Lemon GRE Deck",
+  "short_name": "GRE Deck",
+  "description": "顺序翻页背 GRE 单词，支持熟悉度调频、低频召回和今日音频。",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f7f4de",
+  "theme_color": "#9fca57",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "./icons/app-icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
