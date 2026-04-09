@@ -1,5 +1,11 @@
 # GRE 背单词 App
 
+> Lemon GRE 是一个把 GRE 背词做成清爽小应用的背单词神器：一页一词、点击即读、熟词降频、低频召回，还能直接导入你自己的词表。
+>
+> 在线体验：<https://human-ai-factory.github.io/lemon-gre/>
+>
+> 下载 App：<https://github.com/Human-AI-Factory/lemon-gre/releases/tag/v0.1.0-preview>
+
 打开 [index.html](./index.html) 就能直接用。
 
 ## 界面预览

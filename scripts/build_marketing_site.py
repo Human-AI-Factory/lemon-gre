@@ -109,8 +109,8 @@ def collect_themes() -> list[dict]:
 def build_site_data(themes: list[dict]) -> str:
     payload = {
         "repoName": "Lemon GRE",
-        "heroTitle": "背 GRE 单词，不要再像罚抄。",
-        "heroCopy": "Lemon GRE 把背词拆成一页一词的顺序流：到页即发音、点击滑动翻页、熟词低频召回、Excel 拖进来就能学，还能导出今日音频。现在它不止能用，还做成了 6 款主题版本，直接从 GitHub 免费下载。",
+        "heroTitle": "Lemon GRE，顺序刷词的 GRE 背词 app。",
+        "heroCopy": "Lemon GRE 把背词拆成一页一词的顺序流：到页即发音、点击滑动翻页、熟词低频召回、Excel 拖进来就能学，还能导出今日音频。现在它已经做成了 6 款主题版本，可以直接在线体验，也可以从 GitHub 免费下载。",
         "stats": [
             {"value": "3041", "label": "内置 GRE 词"},
             {"value": "1 页 1 词", "label": "顺序翻页背"},
@@ -183,8 +183,8 @@ def build_index_html(site_data: str) -> str:
               <section class="hero" id="hero">
                 <div class="hero-copy">
                   <div class="eyebrow">GRE Vocab, But Finally Fun</div>
-                  <h1 class="hero-title">背 GRE 单词，不要再像罚抄。</h1>
-                  <p class="hero-text">Lemon GRE 把背词拆成一页一词的顺序流：到页即发音、点击滑动翻页、熟词低频召回、Excel 拖进来就能学，还能导出今日音频。现在它不止能用，还做成了 6 款主题版本，直接从 GitHub 免费下载。</p>
+                  <h1 class="hero-title">Lemon GRE，顺序刷词的 GRE 背词 app。</h1>
+                  <p class="hero-text">Lemon GRE 把背词拆成一页一词的顺序流：到页即发音、点击滑动翻页、熟词低频召回、Excel 拖进来就能学，还能导出今日音频。现在它已经做成了 6 款主题版本，可以直接在线体验，也可以从 GitHub 免费下载。</p>
                   <div class="hero-actions">
                     <a class="primary-cta" href="#downloads">免费下载 App</a>
                     <a class="secondary-cta" href="./app/index.html">在线体验网页版</a>
@@ -264,31 +264,11 @@ def build_index_html(site_data: str) -> str:
                 </div>
               </section>
 
-              <section class="faq-section">
-                <div class="section-heading">
-                  <p class="eyebrow">FAQ</p>
-                  <h2>几个你大概率会被问到的问题。</h2>
-                </div>
-                <div class="faq-list">
-                  <article>
-                    <h3>它和普通抽认卡最大区别是什么？</h3>
-                    <p>不是随机乱飞的卡片流，而是顺序推进的一页一词。你会明显感觉自己在完整地刷完一轮，再靠熟悉度把节奏调顺。</p>
-                  </article>
-                  <article>
-                    <h3>熟词会不会直接消失？</h3>
-                    <p>不会。它只会进入“低频召回”，你太熟的词以后还是会回来，只是间隔更长，避免浪费注意力。</p>
-                  </article>
-                  <article>
-                    <h3>能不能自己加词表？</h3>
-                    <p>可以。Excel、CSV、TXT 都支持，拖进去就能扩充；还可以新建词库、合并词库和拆分词库。</p>
-                  </article>
-                </div>
-              </section>
             </main>
 
             <footer class="footer">
-              <p>Lemon GRE · GitHub Pages 宣传站</p>
-              <p>推到 GitHub 后，把 Pages 的发布目录指向 <code>/docs</code> 即可上线。</p>
+              <p>Lemon GRE</p>
+              <p>在线体验、主题试听和 macOS 安装包都集中在这个页面里。</p>
             </footer>
           </div>
 
