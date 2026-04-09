@@ -2,6 +2,10 @@
 
 打开 [index.html](/Users/ouzhang/Desktop/gre/index.html) 就能直接用。
 
+## 界面预览
+
+![Lemon GRE 应用界面](./app界面.png)
+
 现在已经内置了 [words_bank_raw/GRE_3000_Vocabularies/3000.xlsx](/Users/ouzhang/Desktop/gre/words_bank_raw/GRE_3000_Vocabularies/3000.xlsx) 解析出的 `GRE 3000` 词库，首次打开后可以在空状态页或“批量添加词表”弹层里一键导入。
 
 现在也支持安装成 PWA。用 `localhost` 打开后，Chrome / Edge / Safari 都可以添加到桌面或主屏幕，作为一个独立 app 使用。
