@@ -37,3 +37,15 @@ python3 -m http.server 4173
 - [words_bank_raw](/Users/ouzhang/Desktop/gre/words_bank_raw) 已加入 [.gitignore](/Users/ouzhang/Desktop/gre/.gitignore)，运行时不依赖它；如果你还要重新生成词库，保留本地原始 Excel 即可
 - “导出音频”依赖浏览器的标签页录音能力，成功时会下载 `webm`
 - 浏览器不支持录音时，会自动降级为导出今日朗读脚本
+
+## 致谢
+
+本项目内置的 `GRE 3000` 词库，来自本地原始目录 [words_bank_raw/GRE_3000_Vocabularies](/Users/ouzhang/Desktop/gre/words_bank_raw/GRE_3000_Vocabularies) 中的 Excel 词表整理。
+
+特别致谢：
+
+- `GRE_3000_Vocabularies` 项目：<https://github.com/yuanjiaz/GRE_3000_Vocabularies>
+- 上游原始项目 `3000`：<https://github.com/liurui39660/3000>
+- 该词表在上游说明中标注的原始文件出处为 ChaseDream 论坛，再要你命 3000，作者为“我和葡萄”：<https://forum.chasedream.com/thread-702976-1-1.html>
+
+词库内容版权和整理工作归原作者及相关整理者所有；本项目仅将其转换为适合本地背词应用使用的内置词库格式。
