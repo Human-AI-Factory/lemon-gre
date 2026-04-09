@@ -6,8 +6,9 @@
     <meta name="theme-color" content="#9fca57">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <title>Lemon GRE Deck</title>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <title>Lemon GRE</title>
+    <script src="./theme.config.js"></script>
+    <script src="./vendor/vue.global.prod.js"></script>
     <link rel="manifest" href="./manifest.webmanifest">
     <link rel="icon" href="./icons/app-icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="./icons/app-icon.svg">
@@ -153,6 +154,10 @@
             flex-shrink: 0;
         }
 
+        .quick-menu-wrap {
+            position: relative;
+        }
+
         .icon-btn {
             min-width: 46px;
             min-height: 46px;
@@ -173,41 +178,39 @@
             background: rgba(255, 255, 255, 0.88);
         }
 
-        .summary-strip {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 10px;
-        }
-
-        .summary-card {
-            padding: 14px 14px 12px;
+        .quick-menu {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: min(240px, calc(100vw - 40px));
+            padding: 8px;
             border-radius: 22px;
-            background: var(--card);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 14px 32px rgba(111, 157, 45, 0.08);
+            background: rgba(255, 255, 255, 0.96);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 24px 48px rgba(20, 58, 43, 0.16);
             backdrop-filter: blur(14px);
+            z-index: 8;
         }
 
-        .summary-label {
-            display: block;
-            font-size: 11px;
-            letter-spacing: 0.06em;
-            text-transform: uppercase;
-            color: var(--ink-soft);
-            margin-bottom: 8px;
+        .quick-menu-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            min-height: 48px;
+            padding: 0 14px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ink);
+            transition: background 0.2s ease, transform 0.2s ease;
         }
 
-        .summary-value {
-            font-size: 23px;
-            font-weight: 700;
-            line-height: 1;
-            letter-spacing: -0.04em;
-        }
-
-        .summary-sub {
-            margin-top: 6px;
-            font-size: 12px;
-            color: var(--ink-soft);
+        .quick-menu-btn:hover,
+        .quick-menu-btn:active {
+            background: rgba(159, 202, 87, 0.14);
+            transform: translateY(-1px);
         }
 
         .progress-panel {
@@ -243,6 +246,32 @@
             color: var(--ink-soft);
             font-size: 13px;
             white-space: nowrap;
+        }
+
+        .progress-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .progress-stat {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 32px;
+            padding: 0 12px;
+            border-radius: 999px;
+            background: rgba(159, 202, 87, 0.12);
+            color: var(--ink-soft);
+            font-size: 12px;
+            line-height: 1;
+        }
+
+        .progress-stat strong {
+            color: var(--ink);
+            font-size: 14px;
+            font-weight: 700;
         }
 
         .progress-track {
@@ -859,7 +888,6 @@
                 padding-right: 14px;
             }
 
-            .summary-strip,
             .audio-actions,
             .library-metrics,
             .bank-card,
@@ -890,33 +918,21 @@
     <div id="app" class="app-shell">
         <header class="topbar">
             <div>
-                <div class="brand-tag">Lemon GRE Deck</div>
-                <h1 class="brand-title">一页一词，顺序背完，再低频召回。</h1>
-                <p class="brand-copy">点击词卡或左右滑动切页。每页到达即发音，熟词不会消失，只会更少地回来。</p>
+                <div class="brand-tag">{{ themeBrandTag }}</div>
+                <h1 class="brand-title">{{ currentBankTitle }}</h1>
+                <p class="brand-copy">{{ themeBrandCopy }}</p>
             </div>
             <div class="top-actions">
-                <button class="icon-btn" type="button" title="词库管理" @click="showLibrary = true">📚</button>
-                <button class="icon-btn" type="button" title="添加词表" @click="showAddModal = true">➕</button>
+                <button class="icon-btn" type="button" title="今日音频 / 导出" @click="showAudioModal = true">⤓</button>
+                <div class="quick-menu-wrap">
+                    <button class="icon-btn" type="button" title="快捷操作" @click.stop="toggleQuickActions">➕</button>
+                    <div v-if="showQuickActions" class="quick-menu">
+                        <button class="quick-menu-btn" type="button" @click="openAddModalFromQuickActions">导入 / 新建词库</button>
+                        <button class="quick-menu-btn" type="button" @click="openImportPickerFromQuickActions">➕ 导入词表</button>
+                    </div>
+                </div>
             </div>
         </header>
-
-        <section class="summary-strip">
-            <article class="summary-card">
-                <span class="summary-label">当前轮次</span>
-                <div class="summary-value">#{{ sessionRound }}</div>
-                <div class="summary-sub">{{ formattedDate }}</div>
-            </article>
-            <article class="summary-card">
-                <span class="summary-label">当前队列</span>
-                <div class="summary-value">{{ roundQueue.length }}</div>
-                <div class="summary-sub">{{ activeBankLabel }} · 剩余 {{ remainingCount }}</div>
-            </article>
-            <article class="summary-card">
-                <span class="summary-label">低频词</span>
-                <div class="summary-value">{{ lowCount }}</div>
-                <div class="summary-sub">常规 {{ normalCount }}</div>
-            </article>
-        </section>
 
         <section class="progress-panel">
             <div class="progress-head">
@@ -926,6 +942,12 @@
                     <p class="progress-copy" v-else>先导入词表，再开始今天这一轮。</p>
                 </div>
                 <div class="progress-meta">{{ roundQueue.length ? `${currentIndex + 1} / ${roundQueue.length}` : '0 / 0' }}</div>
+            </div>
+            <div class="progress-stats">
+                <span class="progress-stat">当前队列 <strong>{{ roundQueue.length }}</strong></span>
+                <span class="progress-stat">剩余 <strong>{{ remainingCount }}</strong></span>
+                <span class="progress-stat">低频 <strong>{{ lowCount }}</strong></span>
+                <span class="progress-stat">常规 <strong>{{ normalCount }}</strong></span>
             </div>
             <div class="progress-track">
                 <div class="progress-bar" :style="{ width: `${progressPercent}%` }"></div>
@@ -987,23 +1009,6 @@
             <button class="secondary-btn familiar-tone" type="button" @click="markCurrentAsFamiliar">熟悉，稍后出现</button>
             <button class="secondary-btn" type="button" @click="moveCurrentToLowFrequency">太熟了，低频召回</button>
             <button class="secondary-btn" type="button" @click="showLibrary = true">查看词库 / 恢复单词</button>
-        </section>
-
-        <section class="audio-panel">
-            <div class="audio-head">
-                <div>
-                    <p class="panel-label">今日音频</p>
-                    <h3 class="panel-title">{{ todayAudioTitle }}</h3>
-                </div>
-                <button class="text-btn" type="button" @click="downloadAudioScript" :disabled="!roundQueue.length">导出脚本</button>
-            </div>
-            <p class="audio-copy">连续朗读当前轮次的全部单词和中文意思。浏览器支持时，可以直接尝试导出 `webm` 音频。</p>
-            <div class="audio-actions">
-                <button class="primary-btn" type="button" @click="playDailyAudio" :disabled="!roundQueue.length || isPlayingDaily || isExportingAudio">播放今日词单</button>
-                <button class="secondary-btn" type="button" @click="stopDailyPlayback" :disabled="!isPlayingDaily && !isExportingAudio">停止</button>
-                <button class="secondary-btn" type="button" @click="exportDailyAudio" :disabled="!roundQueue.length || isExportingAudio">导出音频</button>
-            </div>
-            <p class="audio-tip">{{ audioHint }}</p>
         </section>
 
         <div class="sheet-mask" v-if="showAddModal" @click.self="closeAddModal">
@@ -1123,6 +1128,36 @@
             </section>
         </div>
 
+        <div class="sheet-mask" v-if="showAudioModal" @click.self="showAudioModal = false">
+            <section class="sheet">
+                <div class="sheet-header">
+                    <div>
+                        <h3 class="sheet-title">今日音频</h3>
+                        <p class="sheet-copy">连续朗读当前轮次的全部单词和中文意思，也可以尝试直接导出音频文件。</p>
+                    </div>
+                    <button class="ghost-chip" type="button" @click="showAudioModal = false">关闭</button>
+                </div>
+                <div class="sheet-body">
+                    <section class="audio-panel">
+                        <div class="audio-head">
+                            <div>
+                                <p class="panel-label">今日音频</p>
+                                <h3 class="panel-title">{{ todayAudioTitle }}</h3>
+                            </div>
+                            <button class="text-btn" type="button" @click="downloadAudioScript" :disabled="!roundQueue.length">导出脚本</button>
+                        </div>
+                        <p class="audio-copy">连续朗读当前轮次的全部单词和中文意思。浏览器支持时，可以直接尝试导出 `webm` 音频。</p>
+                        <div class="audio-actions">
+                            <button class="primary-btn" type="button" @click="playDailyAudio" :disabled="!roundQueue.length || isPlayingDaily || isExportingAudio">播放今日词单</button>
+                            <button class="secondary-btn" type="button" @click="stopDailyPlayback" :disabled="!isPlayingDaily && !isExportingAudio">停止</button>
+                            <button class="secondary-btn" type="button" @click="exportDailyAudio" :disabled="!roundQueue.length || isExportingAudio">导出音频</button>
+                        </div>
+                        <p class="audio-tip">{{ audioHint }}</p>
+                    </section>
+                </div>
+            </section>
+        </div>
+
         <div class="sheet-mask" v-if="showLibrary" @click.self="showLibrary = false">
             <section class="sheet">
                 <div class="sheet-header">
@@ -1188,10 +1223,90 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="./vendor/xlsx.full.min.js"></script>
     <script src="./data/gre3000-bank.js"></script>
     <script>
         const { createApp, ref, reactive, computed, watch, onMounted, onBeforeUnmount, nextTick } = Vue;
+
+        const DEFAULT_THEME = {
+            appName: "Lemon GRE",
+            themeName: "清爽柠檬",
+            displayName: "Lemon GRE · 清爽柠檬",
+            brandTag: "Lemon GRE",
+            brandCopy: "点击词卡或左右滑动切页。每页到达即发音，熟词不会消失，只会更少地回来。",
+            colors: {
+                bgCream: "#f7f4de",
+                bgMint: "#edf7e4",
+                ink: "#143a2b",
+                inkSoft: "#4b6556",
+                lemon: "#ffd75d",
+                lime: "#9fca57",
+                limeDeep: "#6f9d2d",
+                mint: "#dff1d2",
+                warning: "#ffb347",
+                danger: "#e67452"
+            },
+            voices: {
+                en: ["Samantha", "Eddy (英语（美国）)", "Reed (英语（美国）)"],
+                zh: ["Tingting", "Eddy (中文（中国大陆）)", "Reed (中文（中国大陆）)"]
+            }
+        };
+
+        const RAW_THEME = window.LEMON_GRE_THEME || {};
+        const THEME_CONFIG = {
+            ...DEFAULT_THEME,
+            ...RAW_THEME,
+            colors: {
+                ...DEFAULT_THEME.colors,
+                ...(RAW_THEME.colors || {})
+            },
+            voices: {
+                en: Array.isArray(RAW_THEME.voices?.en) && RAW_THEME.voices.en.length ? RAW_THEME.voices.en : DEFAULT_THEME.voices.en,
+                zh: Array.isArray(RAW_THEME.voices?.zh) && RAW_THEME.voices.zh.length ? RAW_THEME.voices.zh : DEFAULT_THEME.voices.zh
+            }
+        };
+
+        function applyThemeConfig(config) {
+            const root = document.documentElement;
+            const colorMap = {
+                "--bg-cream": config.colors.bgCream,
+                "--bg-mint": config.colors.bgMint,
+                "--ink": config.colors.ink,
+                "--ink-soft": config.colors.inkSoft,
+                "--lemon": config.colors.lemon,
+                "--lime": config.colors.lime,
+                "--lime-deep": config.colors.limeDeep,
+                "--mint": config.colors.mint,
+                "--warning": config.colors.warning,
+                "--danger": config.colors.danger
+            };
+
+            Object.entries(colorMap).forEach(([key, value]) => {
+                if (value) {
+                    root.style.setProperty(key, value);
+                }
+            });
+
+            if (config.displayName) {
+                document.title = config.displayName;
+            }
+
+            const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+            if (themeColorMeta && config.colors?.lime) {
+                themeColorMeta.setAttribute("content", config.colors.lime);
+            }
+        }
+
+        function normalizeVoiceName(value) {
+            return String(value || "").trim().toLowerCase();
+        }
+
+        function getThemeVoiceNames(langPrefix) {
+            const lang = String(langPrefix || "").toLowerCase();
+            return lang.startsWith("zh") ? THEME_CONFIG.voices.zh : THEME_CONFIG.voices.en;
+        }
+
+        applyThemeConfig(THEME_CONFIG);
 
         const STORAGE_KEY = "gre-lemon-words-v1";
         const SESSION_KEY = "gre-lemon-session-v1";
@@ -1324,9 +1439,13 @@
                 const builtInBanks = ref(Array.isArray(window.GRE_WORD_BANKS) ? window.GRE_WORD_BANKS : []);
                 const wordBanks = ref((Array.isArray(loadedBanks) ? loadedBanks : []).map(normalizeBankRecord));
                 const activeBankIds = ref(Array.isArray(loadedActiveBankIds) ? loadedActiveBankIds.filter(Boolean) : []);
+                const themeBrandTag = computed(() => THEME_CONFIG.brandTag || "Lemon GRE");
+                const themeBrandCopy = computed(() => THEME_CONFIG.brandCopy || DEFAULT_THEME.brandCopy);
 
                 const showAddModal = ref(false);
                 const showLibrary = ref(false);
+                const showAudioModal = ref(false);
+                const showQuickActions = ref(false);
                 const newWordsInput = ref("");
                 const libraryKeyword = ref("");
                 const addTextarea = ref(null);
@@ -1385,13 +1504,18 @@
                 });
                 const normalCount = computed(() => words.value.filter((item) => item.mode !== "low").length);
                 const lowCount = computed(() => words.value.filter((item) => item.mode === "low").length);
-                const activeBankLabel = computed(() => {
-                    if (!wordBanks.value.length || !activeBankIds.value.length) return "全部词库";
-                    if (activeBankIds.value.length === 1) {
-                        const bank = wordBanks.value.find((item) => item.id === activeBankIds.value[0]);
-                        return bank ? bank.name : "当前词库";
-                    }
-                    return `已选 ${activeBankIds.value.length} 个词库`;
+                const currentBankTitle = computed(() => {
+                    if (!wordBanks.value.length) return "当前词库";
+                    const activeBanks = !activeBankIds.value.length
+                        ? wordBanks.value
+                        : wordBanks.value.filter((item) => activeBankIdSet.value.has(item.id));
+
+                    if (!activeBanks.length) return "当前词库";
+                    if (activeBanks.length === 1) return activeBanks[0].name;
+                    if (activeBanks.length === 2) return `${activeBanks[0].name} + ${activeBanks[1].name}`;
+
+                    const preview = activeBanks.slice(0, 2).map((item) => item.name).join(" + ");
+                    return `${preview} 等 ${activeBanks.length} 个词库`;
                 });
                 const formattedDate = computed(() => new Intl.DateTimeFormat("zh-CN", {
                     month: "long",
@@ -1443,6 +1567,41 @@
                     persistSession();
                 }
 
+                function migrateLegacyDefaultBank() {
+                    const builtinBank = builtInBanks.value[0];
+                    if (!builtinBank) return false;
+
+                    const legacyIndex = wordBanks.value.findIndex((bank) => (
+                        bank.id === "default-bank" || bank.name === "默认词库"
+                    ));
+
+                    if (legacyIndex < 0) return false;
+
+                    const legacyBank = wordBanks.value[legacyIndex];
+                    const legacyId = legacyBank.id;
+                    const targetId = builtinBank.id;
+                    const targetBank = wordBanks.value.find((bank, index) => index !== legacyIndex && bank.id === targetId);
+
+                    words.value.forEach((word) => {
+                        const bankIds = Array.isArray(word.bankIds) ? word.bankIds : [];
+                        if (!bankIds.includes(legacyId)) return;
+                        word.bankIds = Array.from(new Set(bankIds.map((bankId) => bankId === legacyId ? targetId : bankId)));
+                    });
+
+                    activeBankIds.value = Array.from(new Set(activeBankIds.value.map((bankId) => bankId === legacyId ? targetId : bankId)));
+                    selectedBankIds.value = Array.from(new Set(selectedBankIds.value.map((bankId) => bankId === legacyId ? targetId : bankId)));
+
+                    if (targetBank) {
+                        wordBanks.value.splice(legacyIndex, 1);
+                    } else {
+                        legacyBank.id = targetId;
+                        legacyBank.name = builtinBank.name;
+                        legacyBank.sourceType = "builtin";
+                    }
+
+                    return true;
+                }
+
                 function pushToast(text, tone = "neutral") {
                     if (toast.timer) clearTimeout(toast.timer);
                     toast.text = text;
@@ -1486,6 +1645,31 @@
                     importPreview.entries = [];
                     importPreview.sourceType = "";
                     importPreview.error = "";
+                }
+
+                function toggleQuickActions() {
+                    showQuickActions.value = !showQuickActions.value;
+                }
+
+                function openAddModalFromQuickActions() {
+                    showQuickActions.value = false;
+                    showAddModal.value = true;
+                }
+
+                function openImportPickerFromQuickActions() {
+                    showQuickActions.value = false;
+                    showAddModal.value = true;
+                    nextTick(() => {
+                        openImportPicker();
+                    });
+                }
+
+                function handleDocumentClick(event) {
+                    const target = event.target;
+                    if (target && target.closest && target.closest(".quick-menu-wrap")) {
+                        return;
+                    }
+                    showQuickActions.value = false;
                 }
 
                 function generateQueueIds(startRound) {
@@ -2220,9 +2404,21 @@
                     });
                 }
 
-                function pickVoice(langPrefix) {
+                function pickVoice(langPrefix, preferredNames = []) {
                     const voiceList = voices.value.length ? voices.value : (window.speechSynthesis?.getVoices?.() || []);
                     if (!voiceList.length) return null;
+
+                    const normalizedPreferred = preferredNames
+                        .map((name) => normalizeVoiceName(name))
+                        .filter(Boolean);
+
+                    for (const preferred of normalizedPreferred) {
+                        const exactMatch = voiceList.find((voice) => normalizeVoiceName(voice.name) === preferred);
+                        if (exactMatch) return exactMatch;
+
+                        const partialMatch = voiceList.find((voice) => normalizeVoiceName(voice.name).includes(preferred));
+                        if (partialMatch) return partialMatch;
+                    }
 
                     return (
                         voiceList.find((voice) => voice.lang && voice.lang.toLowerCase().startsWith(langPrefix.toLowerCase())) ||
@@ -2243,7 +2439,7 @@
                         utterance.pitch = options.pitch ?? 1;
                         utterance.volume = 1;
 
-                        const voice = pickVoice(utterance.lang);
+                        const voice = pickVoice(utterance.lang, options.voiceNames || getThemeVoiceNames(utterance.lang));
                         if (voice) utterance.voice = voice;
 
                         utterance.onend = () => resolve();
@@ -2492,18 +2688,36 @@
 
                 watch(showAddModal, (visible) => {
                     if (visible) {
+                        showQuickActions.value = false;
+                    }
+                    if (visible) {
                         nextTick(() => {
                             addTextarea.value?.focus();
                         });
                     }
                 });
 
+                watch(showLibrary, (visible) => {
+                    if (visible) {
+                        showQuickActions.value = false;
+                    }
+                });
+
+                watch(showAudioModal, (visible) => {
+                    if (visible) {
+                        showQuickActions.value = false;
+                    }
+                });
+
                 onMounted(() => {
+                    migrateLegacyDefaultBank();
+
                     if (words.value.length && !wordBanks.value.length) {
+                        const fallbackBuiltinBank = builtInBanks.value[0];
                         const fallbackBank = ensureBankRecord({
-                            id: "default-bank",
-                            name: "默认词库",
-                            sourceType: "migration"
+                            id: fallbackBuiltinBank?.id || "default-bank",
+                            name: fallbackBuiltinBank?.name || "当前词库",
+                            sourceType: fallbackBuiltinBank ? "builtin" : "migration"
                         });
                         words.value.forEach((word) => {
                             if (!(word.bankIds || []).length) {
@@ -2540,6 +2754,7 @@
                     ensureQueue();
                     ensureVoices();
                     window.addEventListener("keydown", handleKeydown);
+                    document.addEventListener("click", handleDocumentClick);
 
                     if ("serviceWorker" in navigator && location.protocol !== "file:") {
                         navigator.serviceWorker.register("./sw.js").catch(() => {});
@@ -2553,6 +2768,7 @@
                 onBeforeUnmount(() => {
                     if (toast.timer) clearTimeout(toast.timer);
                     window.removeEventListener("keydown", handleKeydown);
+                    document.removeEventListener("click", handleDocumentClick);
                     if ("speechSynthesis" in window) {
                         window.speechSynthesis.cancel();
                     }
@@ -2568,7 +2784,9 @@
                     wordBanks,
                     bankSummaries,
                     activeBankIds,
-                    activeBankLabel,
+                    themeBrandTag,
+                    themeBrandCopy,
+                    currentBankTitle,
                     progressPercent,
                     remainingCount,
                     normalCount,
@@ -2576,8 +2794,10 @@
                     formattedDate,
                     todayAudioTitle,
                     audioHint,
+                    showQuickActions,
                     showAddModal,
                     showLibrary,
+                    showAudioModal,
                     newWordsInput,
                     libraryKeyword,
                     importMode,
@@ -2595,6 +2815,9 @@
                     closeAddModal,
                     addWords,
                     importBuiltInBank,
+                    toggleQuickActions,
+                    openAddModalFromQuickActions,
+                    openImportPickerFromQuickActions,
                     openImportPicker,
                     handleImportInput,
                     handleImportDragOver,

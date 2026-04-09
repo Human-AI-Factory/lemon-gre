@@ -1,2 +1,6 @@
 .DS_Store
 words_bank_raw/
+voice-samples/
+scripts/__pycache__/
+report*.pdf
+apps/qing-shuang-ning-meng

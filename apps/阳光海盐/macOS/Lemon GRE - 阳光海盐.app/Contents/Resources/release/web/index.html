@@ -1,0 +1,2857 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#9fca57">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>Lemon GRE · 阳光海盐</title>
+    <script src="./theme.config.js"></script>
+    <script src="./vendor/vue.global.prod.js"></script>
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="icon" href="./icons/app-icon.png" type="image/png">
+    <link rel="apple-touch-icon" href="./icons/app-icon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-cream: #f7f4de;
+            --bg-mint: #edf7e4;
+            --ink: #143a2b;
+            --ink-soft: #4b6556;
+            --lemon: #ffd75d;
+            --lime: #9fca57;
+            --lime-deep: #6f9d2d;
+            --mint: #dff1d2;
+            --line: rgba(20, 58, 43, 0.1);
+            --card: rgba(255, 255, 255, 0.82);
+            --shadow: 0 30px 70px rgba(92, 128, 38, 0.18);
+            --warning: #ffb347;
+            --danger: #e67452;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+        }
+
+        body {
+            font-family: "Lexend", "Noto Sans SC", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at top left, rgba(255, 215, 93, 0.5), transparent 32%),
+                radial-gradient(circle at top right, rgba(159, 202, 87, 0.28), transparent 28%),
+                linear-gradient(160deg, var(--bg-cream), var(--bg-mint));
+            user-select: none;
+            overflow-x: hidden;
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            inset: auto;
+            border-radius: 999px;
+            filter: blur(18px);
+            opacity: 0.65;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::before {
+            width: 280px;
+            height: 280px;
+            background: rgba(255, 215, 93, 0.22);
+            top: -100px;
+            left: -80px;
+        }
+
+        body::after {
+            width: 240px;
+            height: 240px;
+            background: rgba(159, 202, 87, 0.2);
+            bottom: -100px;
+            right: -70px;
+        }
+
+        button,
+        input,
+        textarea {
+            font: inherit;
+        }
+
+        input,
+        textarea {
+            user-select: text;
+        }
+
+        button {
+            border: 0;
+            background: none;
+            cursor: pointer;
+            color: inherit;
+        }
+
+        .app-shell {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            max-width: 460px;
+            margin: 0 auto;
+            padding: 22px 18px 26px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .brand-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.52);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            color: var(--ink-soft);
+            font-size: 12px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .brand-title {
+            margin: 10px 0 4px;
+            font-size: clamp(28px, 7vw, 38px);
+            line-height: 1.03;
+            letter-spacing: -0.04em;
+        }
+
+        .brand-copy {
+            margin: 0;
+            color: var(--ink-soft);
+            font-size: 14px;
+            line-height: 1.55;
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .quick-menu-wrap {
+            position: relative;
+        }
+
+        .icon-btn {
+            min-width: 46px;
+            min-height: 46px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 12px 24px rgba(112, 142, 67, 0.12);
+            transition: transform 0.2s ease, background 0.2s ease;
+            font-size: 18px;
+        }
+
+        .icon-btn:hover,
+        .icon-btn:active {
+            transform: translateY(-1px);
+            background: rgba(255, 255, 255, 0.88);
+        }
+
+        .quick-menu {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            width: min(240px, calc(100vw - 40px));
+            padding: 8px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.96);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 24px 48px rgba(20, 58, 43, 0.16);
+            backdrop-filter: blur(14px);
+            z-index: 8;
+        }
+
+        .quick-menu-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 10px;
+            min-height: 48px;
+            padding: 0 14px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--ink);
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .quick-menu-btn:hover,
+        .quick-menu-btn:active {
+            background: rgba(159, 202, 87, 0.14);
+            transform: translateY(-1px);
+        }
+
+        .progress-panel {
+            padding: 16px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.54);
+            backdrop-filter: blur(12px);
+        }
+
+        .progress-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .progress-title {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .progress-copy {
+            margin: 4px 0 0;
+            color: var(--ink-soft);
+            font-size: 12px;
+        }
+
+        .progress-meta {
+            color: var(--ink-soft);
+            font-size: 13px;
+            white-space: nowrap;
+        }
+
+        .progress-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .progress-stat {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 32px;
+            padding: 0 12px;
+            border-radius: 999px;
+            background: rgba(159, 202, 87, 0.12);
+            color: var(--ink-soft);
+            font-size: 12px;
+            line-height: 1;
+        }
+
+        .progress-stat strong {
+            color: var(--ink);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .progress-track {
+            height: 12px;
+            background: rgba(159, 202, 87, 0.14);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--lime), var(--lemon));
+            transition: width 0.3s ease;
+        }
+
+        .study-panel {
+            flex: 1;
+            display: flex;
+            align-items: stretch;
+            justify-content: stretch;
+            min-height: 0;
+        }
+
+        .word-card,
+        .empty-card {
+            position: relative;
+            width: 100%;
+            min-height: 52vh;
+            padding: 24px;
+            border-radius: 34px;
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            background:
+                linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.78)),
+                linear-gradient(135deg, rgba(255, 215, 93, 0.16), rgba(159, 202, 87, 0.14));
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .word-card {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            gap: 14px;
+        }
+
+        .word-card::before {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            top: -58px;
+            right: -58px;
+            border-radius: 999px;
+            background: radial-gradient(circle, rgba(255, 215, 93, 0.34), rgba(255, 215, 93, 0));
+        }
+
+        .word-card::after {
+            content: "";
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            bottom: -26px;
+            left: -14px;
+            border-radius: 999px;
+            background: radial-gradient(circle, rgba(159, 202, 87, 0.28), rgba(159, 202, 87, 0));
+        }
+
+        .card-head {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .head-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            background: rgba(20, 58, 43, 0.06);
+            color: var(--ink-soft);
+        }
+
+        .badge.low {
+            background: rgba(255, 215, 93, 0.24);
+            color: #6f5a08;
+        }
+
+        .badge.focus {
+            background: rgba(230, 116, 82, 0.18);
+            color: #8e3f2b;
+        }
+
+        .badge.familiar {
+            background: rgba(111, 157, 45, 0.16);
+            color: #567726;
+        }
+
+        .ghost-chip {
+            position: relative;
+            z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 14px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.86);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            color: var(--ink);
+            font-size: 13px;
+            box-shadow: 0 10px 22px rgba(111, 157, 45, 0.08);
+        }
+
+        .card-center {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .card-eyebrow {
+            margin: 0;
+            color: var(--ink-soft);
+            font-size: 12px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .word-title {
+            margin: 0;
+            font-size: clamp(34px, 11vw, 48px);
+            line-height: 0.98;
+            letter-spacing: -0.06em;
+            word-break: break-word;
+        }
+
+        .phonetic {
+            margin: 0;
+            color: var(--lime-deep);
+            font-size: 18px;
+        }
+
+        .phonetic.placeholder {
+            font-size: 14px;
+            color: rgba(20, 58, 43, 0.48);
+        }
+
+        .meaning-panel {
+            position: relative;
+            z-index: 1;
+            padding: 18px 18px 16px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(245, 251, 240, 0.96), rgba(255, 249, 220, 0.88));
+            border: 1px solid rgba(159, 202, 87, 0.14);
+        }
+
+        .meaning-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+        }
+
+        .meaning-text {
+            margin: 12px 0 0;
+            font-size: 24px;
+            line-height: 1.35;
+            letter-spacing: -0.03em;
+            word-break: break-word;
+        }
+
+        .card-hint {
+            margin: 14px 0 0;
+            font-size: 12px;
+            color: rgba(20, 58, 43, 0.48);
+        }
+
+        .empty-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .empty-title {
+            margin: 0;
+            font-size: 28px;
+            letter-spacing: -0.04em;
+        }
+
+        .empty-copy {
+            margin: 0;
+            color: var(--ink-soft);
+            line-height: 1.65;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .audio-panel {
+            padding: 18px;
+            border-radius: 26px;
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 16px 28px rgba(111, 157, 45, 0.08);
+        }
+
+        .audio-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .panel-label {
+            margin: 0;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--ink-soft);
+        }
+
+        .panel-title {
+            margin: 5px 0 0;
+            font-size: 20px;
+            line-height: 1.18;
+            letter-spacing: -0.04em;
+        }
+
+        .audio-copy,
+        .audio-tip {
+            margin: 0;
+            color: var(--ink-soft);
+            line-height: 1.6;
+            font-size: 13px;
+        }
+
+        .audio-actions {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin: 16px 0 10px;
+        }
+
+        .primary-btn,
+        .secondary-btn,
+        .text-btn {
+            min-height: 48px;
+            border-radius: 18px;
+            transition: transform 0.2s ease, opacity 0.2s ease, background 0.2s ease;
+        }
+
+        .primary-btn:disabled,
+        .secondary-btn:disabled,
+        .text-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .primary-btn {
+            padding: 12px 16px;
+            color: #183321;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--lemon), #ffe688);
+            box-shadow: 0 14px 30px rgba(255, 215, 93, 0.34);
+        }
+
+        .secondary-btn {
+            padding: 12px 16px;
+            font-weight: 600;
+            color: var(--ink);
+            background: rgba(255, 255, 255, 0.88);
+            border: 1px solid rgba(20, 58, 43, 0.08);
+        }
+
+        .secondary-btn.focus-tone {
+            background: rgba(230, 116, 82, 0.12);
+            border-color: rgba(230, 116, 82, 0.18);
+            color: #8e3f2b;
+        }
+
+        .secondary-btn.familiar-tone {
+            background: rgba(159, 202, 87, 0.16);
+            border-color: rgba(111, 157, 45, 0.18);
+            color: #567726;
+        }
+
+        .text-btn {
+            min-height: 0;
+            padding: 0;
+            border-radius: 0;
+            color: var(--lime-deep);
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .sheet-mask {
+            position: fixed;
+            inset: 0;
+            z-index: 20;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding: 18px;
+            background: rgba(14, 26, 19, 0.22);
+            backdrop-filter: blur(14px);
+        }
+
+        .sheet {
+            width: min(460px, 100%);
+            max-height: min(82vh, 860px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border-radius: 30px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 251, 240, 0.92));
+            box-shadow: 0 28px 70px rgba(20, 58, 43, 0.22);
+        }
+
+        .sheet-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 22px 22px 14px;
+        }
+
+        .sheet-title {
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: -0.04em;
+        }
+
+        .sheet-copy {
+            margin: 8px 0 0;
+            color: var(--ink-soft);
+            line-height: 1.55;
+            font-size: 13px;
+        }
+
+        .sheet-body {
+            padding: 0 22px 22px;
+            overflow: auto;
+        }
+
+        .field-label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 13px;
+            color: var(--ink-soft);
+        }
+
+        .textarea,
+        .search-input {
+            width: 100%;
+            border: 1px solid rgba(20, 58, 43, 0.12);
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--ink);
+            outline: none;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+        }
+
+        .textarea {
+            min-height: 220px;
+            resize: vertical;
+            padding: 18px;
+            line-height: 1.7;
+        }
+
+        .search-input {
+            padding: 14px 16px;
+            margin-bottom: 14px;
+        }
+
+        .sheet-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .helper-card {
+            padding: 14px 16px;
+            margin-top: 14px;
+            border-radius: 18px;
+            background: rgba(159, 202, 87, 0.08);
+            color: var(--ink-soft);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .bank-grid {
+            display: grid;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .bank-card {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            align-items: center;
+            padding: 16px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(20, 58, 43, 0.08);
+        }
+
+        .bank-title {
+            margin: 6px 0 0;
+            font-size: 18px;
+            letter-spacing: -0.03em;
+        }
+
+        .bank-meta {
+            margin: 6px 0 0;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--ink-soft);
+        }
+
+        .library-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .metric-box {
+            padding: 13px 14px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(20, 58, 43, 0.08);
+        }
+
+        .metric-label {
+            display: block;
+            color: var(--ink-soft);
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .metric-value {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+        }
+
+        .library-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .library-item {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 16px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.88);
+            border: 1px solid rgba(20, 58, 43, 0.08);
+        }
+
+        .library-word {
+            margin: 0;
+            font-size: 20px;
+            letter-spacing: -0.04em;
+        }
+
+        .library-meaning,
+        .library-meta {
+            margin: 6px 0 0;
+            font-size: 13px;
+            line-height: 1.55;
+            color: var(--ink-soft);
+        }
+
+        .library-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+            min-width: 110px;
+        }
+
+        .status-pill,
+        .mini-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .status-pill.normal {
+            background: rgba(159, 202, 87, 0.14);
+            color: var(--lime-deep);
+        }
+
+        .status-pill.low {
+            background: rgba(255, 215, 93, 0.26);
+            color: #846707;
+        }
+
+        .status-pill.focus {
+            background: rgba(230, 116, 82, 0.18);
+            color: #9a4630;
+        }
+
+        .status-pill.familiar {
+            background: rgba(111, 157, 45, 0.16);
+            color: #567726;
+        }
+
+        .mini-btn {
+            background: rgba(20, 58, 43, 0.06);
+            color: var(--ink);
+        }
+
+        .mini-btn.warn {
+            background: rgba(255, 215, 93, 0.3);
+        }
+
+        .toast-stack {
+            position: fixed;
+            left: 50%;
+            bottom: 22px;
+            transform: translateX(-50%);
+            z-index: 30;
+            width: min(400px, calc(100vw - 28px));
+        }
+
+        .toast {
+            padding: 14px 16px;
+            border-radius: 18px;
+            color: white;
+            box-shadow: 0 16px 32px rgba(20, 58, 43, 0.24);
+            backdrop-filter: blur(10px);
+            animation: toast-in 0.2s ease;
+        }
+
+        .toast.tone-neutral {
+            background: rgba(27, 55, 40, 0.92);
+        }
+
+        .toast.tone-success {
+            background: rgba(98, 141, 36, 0.95);
+        }
+
+        .toast.tone-warning {
+            background: rgba(217, 142, 25, 0.94);
+        }
+
+        .toast.tone-error {
+            background: rgba(193, 88, 61, 0.96);
+        }
+
+        .deck-enter-active,
+        .deck-leave-active {
+            transition: opacity 0.28s ease, transform 0.28s ease;
+        }
+
+        .deck-enter-from {
+            opacity: 0;
+            transform: translateX(24px) scale(0.985);
+        }
+
+        .deck-leave-to {
+            opacity: 0;
+            transform: translateX(-24px) scale(0.985);
+        }
+
+        @keyframes toast-in {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 420px) {
+            .app-shell {
+                padding-left: 14px;
+                padding-right: 14px;
+            }
+
+            .audio-actions,
+            .library-metrics,
+            .bank-card,
+            .controls,
+            .sheet-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .word-card,
+            .empty-card {
+                min-height: 48vh;
+            }
+
+            .library-item {
+                flex-direction: column;
+            }
+
+            .library-actions {
+                width: 100%;
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="app-shell">
+        <header class="topbar">
+            <div>
+                <div class="brand-tag">{{ themeBrandTag }}</div>
+                <h1 class="brand-title">{{ currentBankTitle }}</h1>
+                <p class="brand-copy">{{ themeBrandCopy }}</p>
+            </div>
+            <div class="top-actions">
+                <button class="icon-btn" type="button" title="今日音频 / 导出" @click="showAudioModal = true">⤓</button>
+                <div class="quick-menu-wrap">
+                    <button class="icon-btn" type="button" title="快捷操作" @click.stop="toggleQuickActions">➕</button>
+                    <div v-if="showQuickActions" class="quick-menu">
+                        <button class="quick-menu-btn" type="button" @click="openAddModalFromQuickActions">导入 / 新建词库</button>
+                        <button class="quick-menu-btn" type="button" @click="openImportPickerFromQuickActions">➕ 导入词表</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="progress-panel">
+            <div class="progress-head">
+                <div>
+                    <h2 class="progress-title">顺序词卡进度</h2>
+                    <p class="progress-copy" v-if="currentWord">{{ currentWord.word }} 正在第 {{ currentIndex + 1 }} 张</p>
+                    <p class="progress-copy" v-else>先导入词表，再开始今天这一轮。</p>
+                </div>
+                <div class="progress-meta">{{ roundQueue.length ? `${currentIndex + 1} / ${roundQueue.length}` : '0 / 0' }}</div>
+            </div>
+            <div class="progress-stats">
+                <span class="progress-stat">当前队列 <strong>{{ roundQueue.length }}</strong></span>
+                <span class="progress-stat">剩余 <strong>{{ remainingCount }}</strong></span>
+                <span class="progress-stat">低频 <strong>{{ lowCount }}</strong></span>
+                <span class="progress-stat">常规 <strong>{{ normalCount }}</strong></span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-bar" :style="{ width: `${progressPercent}%` }"></div>
+            </div>
+        </section>
+
+        <main class="study-panel" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
+            <transition name="deck" mode="out-in">
+                <article
+                    v-if="currentWord"
+                    :key="`${currentWord.id}-${currentIndex}-${sessionRound}`"
+                    class="word-card"
+                    @click="goNextFromTap"
+                >
+                    <div class="card-head">
+                        <div class="head-badges">
+                            <span class="badge">Round {{ sessionRound }}</span>
+                            <span class="badge">{{ currentIndex + 1 }} / {{ roundQueue.length }}</span>
+                            <span class="badge low" v-if="currentWord.mode === 'low'">低频召回</span>
+                            <span class="badge focus" v-else-if="currentWord.familiarity === 'focus'">重点复习</span>
+                            <span class="badge familiar" v-else-if="currentWord.familiarity === 'familiar'">熟悉词</span>
+                        </div>
+                        <button class="ghost-chip" type="button" @click.stop="speakCurrentWord(true)">🔊 重播</button>
+                    </div>
+
+                    <div class="card-center">
+                        <p class="card-eyebrow">Tap Or Swipe</p>
+                        <h2 class="word-title">{{ currentWord.word }}</h2>
+                        <p class="phonetic" v-if="currentWord.phonetic">/ {{ formatPhonetic(currentWord.phonetic) }} /</p>
+                        <p class="phonetic placeholder" v-else>还没填音标也没关系，先把词刷起来。</p>
+                    </div>
+
+                    <div class="meaning-panel">
+                        <span class="meaning-label">中文意思</span>
+                        <p class="meaning-text">{{ currentWord.meaning }}</p>
+                        <p class="card-hint">{{ getWordFrequencyHint(currentWord) }}</p>
+                        <p class="card-hint">点击卡片或左右滑动进入下一个单词。键盘支持 `→`、空格、`R` 重播、`U/F/L` 调频。</p>
+                    </div>
+                </article>
+
+                <section v-else key="empty" class="empty-card">
+                    <h2 class="empty-title">词库还是空的</h2>
+                    <p class="empty-copy">支持随时粘贴词表，每行一个词。默认格式：`word, 中文意思, 音标(可选)`。</p>
+                    <button class="primary-btn" type="button" @click="showAddModal = true">添加第一份词表</button>
+                    <button
+                        v-if="builtInBanks.length"
+                        class="secondary-btn"
+                        type="button"
+                        @click="importBuiltInBank(builtInBanks[0].id)"
+                    >
+                        一键导入 {{ builtInBanks[0].name }}
+                    </button>
+                </section>
+            </transition>
+        </main>
+
+        <section class="controls" v-if="currentWord">
+            <button class="secondary-btn focus-tone" type="button" @click="markCurrentAsFocus">不熟悉，多出现</button>
+            <button class="secondary-btn familiar-tone" type="button" @click="markCurrentAsFamiliar">熟悉，稍后出现</button>
+            <button class="secondary-btn" type="button" @click="moveCurrentToLowFrequency">太熟了，低频召回</button>
+            <button class="secondary-btn" type="button" @click="showLibrary = true">查看词库 / 恢复单词</button>
+        </section>
+
+        <div class="sheet-mask" v-if="showAddModal" @click.self="closeAddModal">
+            <section class="sheet">
+                <div class="sheet-header">
+                    <div>
+                        <h3 class="sheet-title">批量添加词表</h3>
+                        <p class="sheet-copy">随时添加都可以。新单词会直接进入当前学习队列尾部，不用重新开始这一轮。</p>
+                    </div>
+                    <button class="ghost-chip" type="button" @click="closeAddModal">关闭</button>
+                </div>
+                <div class="sheet-body">
+                    <div class="bank-grid" v-if="builtInBanks.length">
+                        <article class="bank-card" v-for="bank in builtInBanks" :key="bank.id">
+                            <div>
+                                <p class="panel-label">内置词库</p>
+                                <h4 class="bank-title">{{ bank.name }}</h4>
+                                <p class="bank-meta">{{ bank.sourceNote }} · {{ bank.total }} 词</p>
+                            </div>
+                            <button class="primary-btn" type="button" @click="importBuiltInBank(bank.id)">一键导入</button>
+                        </article>
+                    </div>
+                    <div
+                        class="helper-card"
+                        :style="{ borderStyle: 'dashed', borderWidth: '2px', borderColor: importDragOver ? 'rgba(111,157,45,0.55)' : 'rgba(20,58,43,0.08)', background: importDragOver ? 'rgba(223,241,210,0.72)' : 'rgba(255,255,255,0.92)' }"
+                        @dragover.prevent="handleImportDragOver"
+                        @dragleave.prevent="handleImportDragLeave"
+                        @drop="handleImportDrop"
+                    >
+                        <p class="panel-label">拖拽导入</p>
+                        <h4 class="bank-title">Excel / CSV / TXT 直接进来</h4>
+                        <p class="bank-meta">支持把 `xlsx`、`xlsm`、`csv`、`txt` 直接拖到这里，或者点按钮选择文件。会自动识别单词、释义和音标列。</p>
+                        <input ref="importFileInput" type="file" accept=".xlsx,.xls,.xlsm,.csv,.txt" style="display:none" @change="handleImportInput">
+                        <div class="sheet-actions">
+                            <button class="primary-btn" type="button" @click="openImportPicker">选择词表文件</button>
+                            <button class="secondary-btn" type="button" @click="clearImportPreview" :disabled="!importPreview.entries.length && !importPreview.error">清空预览</button>
+                        </div>
+                    </div>
+
+                    <div class="helper-card" v-if="importPreview.sourceName || importPreview.error">
+                        <p class="panel-label">导入预览</p>
+                        <p class="bank-meta" v-if="importPreview.sourceName">{{ importPreview.sourceName }} · 识别到 {{ importPreview.entries.length }} 条</p>
+                        <p class="bank-meta" v-if="importPreview.error">{{ importPreview.error }}</p>
+                        <p class="bank-meta" v-if="importPreview.entries.length">
+                            预览：{{ importPreview.entries.slice(0, 3).map(item => `${item.word} - ${item.meaning}`).join(' / ') }}
+                        </p>
+                    </div>
+
+                    <label class="field-label">导入方式</label>
+                    <select class="search-input" v-model="importMode">
+                        <option value="new">新建一个词库</option>
+                        <option value="append">继续扩充现有词库</option>
+                    </select>
+
+                    <input
+                        v-if="importMode === 'new'"
+                        class="search-input"
+                        type="text"
+                        v-model="importBankName"
+                        placeholder="新词库名称"
+                    >
+
+                    <select v-else class="search-input" v-model="importTargetBankId">
+                        <option value="">选择要扩充的词库</option>
+                        <option v-for="bank in bankSummaries" :key="bank.id" :value="bank.id">{{ bank.name }} · {{ bank.memberCount }} 词</option>
+                    </select>
+
+                    <div class="sheet-actions">
+                        <button class="secondary-btn" type="button" @click="applyImportPreview" :disabled="!importPreview.entries.length">导入预览文件</button>
+                        <button class="secondary-btn" type="button" @click="mergeSelectedBanks" :disabled="selectedBankIds.length < 2">合并勾选词库</button>
+                    </div>
+
+                    <label class="field-label" for="word-batch">每行一条，支持 `英文,中文意思,音标` 或 `英文 TAB 中文意思`</label>
+                    <textarea
+                        id="word-batch"
+                        ref="addTextarea"
+                        class="textarea"
+                        v-model="newWordsInput"
+                        placeholder="abate,减轻,əˈbeɪt&#10;arduous,艰巨的,ˈɑːrdʒuəs&#10;ubiquitous	无处不在的"
+                    ></textarea>
+                    <div class="helper-card">
+                        已有同名单词会自动更新释义，不重复插入。降频词恢复后会重新回到当前或下一轮队列。
+                    </div>
+                    <div class="sheet-actions">
+                        <button class="secondary-btn" type="button" @click="closeAddModal">取消</button>
+                        <button class="primary-btn" type="button" @click="addWords">保存到词库</button>
+                    </div>
+
+                    <div class="helper-card" style="margin-top:18px">
+                        <p class="panel-label">词库中心</p>
+                        <p class="bank-meta">可以单独学习某个词库、暂停某个词库、合并多个词库，或者把一个词库按固定数量拆分成多个子词库。</p>
+                    </div>
+
+                    <div class="library-list">
+                        <article class="library-item" v-for="bank in bankSummaries" :key="bank.id">
+                            <div>
+                                <h4 class="library-word">{{ bank.name }}</h4>
+                                <p class="library-meta">{{ bank.memberCount }} 词 · {{ bank.sourceType }}</p>
+                                <p class="library-meta">{{ bank.isActive ? '当前参与学习' : '当前暂停学习' }}</p>
+                            </div>
+                            <div class="library-actions">
+                                <label class="mini-btn" style="gap:8px">
+                                    <input type="checkbox" :checked="bank.isSelected" @change="toggleBankSelection(bank.id)">
+                                    合并选择
+                                </label>
+                                <button class="mini-btn" type="button" @click="focusSingleBank(bank.id)">只学这个</button>
+                                <button class="mini-btn" type="button" @click="toggleBankActive(bank.id)">{{ bank.isActive ? '暂停学习' : '加入学习' }}</button>
+                                <button class="mini-btn" type="button" @click="splitBank(bank)">拆分</button>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="sheet-actions" v-if="bankSummaries.length">
+                        <button class="secondary-btn" type="button" @click="resetActiveBanks">恢复全部词库</button>
+                        <button class="secondary-btn" type="button" @click="showAddModal = false">完成</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="sheet-mask" v-if="showAudioModal" @click.self="showAudioModal = false">
+            <section class="sheet">
+                <div class="sheet-header">
+                    <div>
+                        <h3 class="sheet-title">今日音频</h3>
+                        <p class="sheet-copy">连续朗读当前轮次的全部单词和中文意思，也可以尝试直接导出音频文件。</p>
+                    </div>
+                    <button class="ghost-chip" type="button" @click="showAudioModal = false">关闭</button>
+                </div>
+                <div class="sheet-body">
+                    <section class="audio-panel">
+                        <div class="audio-head">
+                            <div>
+                                <p class="panel-label">今日音频</p>
+                                <h3 class="panel-title">{{ todayAudioTitle }}</h3>
+                            </div>
+                            <button class="text-btn" type="button" @click="downloadAudioScript" :disabled="!roundQueue.length">导出脚本</button>
+                        </div>
+                        <p class="audio-copy">连续朗读当前轮次的全部单词和中文意思。浏览器支持时，可以直接尝试导出 `webm` 音频。</p>
+                        <div class="audio-actions">
+                            <button class="primary-btn" type="button" @click="playDailyAudio" :disabled="!roundQueue.length || isPlayingDaily || isExportingAudio">播放今日词单</button>
+                            <button class="secondary-btn" type="button" @click="stopDailyPlayback" :disabled="!isPlayingDaily && !isExportingAudio">停止</button>
+                            <button class="secondary-btn" type="button" @click="exportDailyAudio" :disabled="!roundQueue.length || isExportingAudio">导出音频</button>
+                        </div>
+                        <p class="audio-tip">{{ audioHint }}</p>
+                    </section>
+                </div>
+            </section>
+        </div>
+
+        <div class="sheet-mask" v-if="showLibrary" @click.self="showLibrary = false">
+            <section class="sheet">
+                <div class="sheet-header">
+                    <div>
+                        <h3 class="sheet-title">词库管理</h3>
+                        <p class="sheet-copy">这里可以搜索单词、手动降频，或者把低频词恢复成常规频率。</p>
+                    </div>
+                    <button class="ghost-chip" type="button" @click="showLibrary = false">关闭</button>
+                </div>
+                <div class="sheet-body">
+                    <div class="library-metrics">
+                        <div class="metric-box">
+                            <span class="metric-label">总词数</span>
+                            <div class="metric-value">{{ words.length }}</div>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-label">常规词</span>
+                            <div class="metric-value">{{ normalCount }}</div>
+                        </div>
+                        <div class="metric-box">
+                            <span class="metric-label">低频词</span>
+                            <div class="metric-value">{{ lowCount }}</div>
+                        </div>
+                    </div>
+
+                    <input class="search-input" type="text" v-model="libraryKeyword" placeholder="搜索英文、中文或音标">
+
+                    <div class="library-list" v-if="filteredWords.length">
+                        <article class="library-item" v-for="item in filteredWords" :key="item.id">
+                            <div>
+                                <h4 class="library-word">{{ item.word }}</h4>
+                                <p class="library-meaning">{{ item.meaning }}</p>
+                                <p class="library-meta" v-if="item.phonetic">/ {{ formatPhonetic(item.phonetic) }} /</p>
+                                <p class="library-meta" v-else>未填写音标</p>
+                                <p class="library-meta">{{ getWordFrequencyHint(item) }}</p>
+                                <p class="library-meta" v-if="(item.nextDueRound || sessionRound) > sessionRound">下次预计在第 {{ item.nextDueRound || sessionRound }} 轮出现</p>
+                            </div>
+                            <div class="library-actions">
+                                <span class="status-pill" :class="getWordStateClass(item)">
+                                    {{ getWordStateLabel(item) }}
+                                </span>
+                                <button
+                                    class="mini-btn"
+                                    :class="{ warn: item.mode !== 'low' }"
+                                    type="button"
+                                    @click="item.mode === 'low' ? restoreWord(item) : moveWordToLowFrequency(item)"
+                                >
+                                    {{ item.mode === 'low' ? '恢复常规' : '降为低频' }}
+                                </button>
+                            </div>
+                        </article>
+                    </div>
+
+                    <div class="helper-card" v-else>
+                        没有搜到对应的词。换个英文、中文或者音标试试。
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="toast-stack" aria-live="polite">
+            <div v-if="toast.visible" class="toast" :class="`tone-${toast.tone}`">{{ toast.text }}</div>
+        </div>
+    </div>
+
+    <script src="./vendor/xlsx.full.min.js"></script>
+    <script src="./data/gre3000-bank.js"></script>
+    <script>
+        const { createApp, ref, reactive, computed, watch, onMounted, onBeforeUnmount, nextTick } = Vue;
+
+        const DEFAULT_THEME = {
+            appName: "Lemon GRE",
+            themeName: "清爽柠檬",
+            displayName: "Lemon GRE · 清爽柠檬",
+            brandTag: "Lemon GRE",
+            brandCopy: "点击词卡或左右滑动切页。每页到达即发音，熟词不会消失，只会更少地回来。",
+            colors: {
+                bgCream: "#f7f4de",
+                bgMint: "#edf7e4",
+                ink: "#143a2b",
+                inkSoft: "#4b6556",
+                lemon: "#ffd75d",
+                lime: "#9fca57",
+                limeDeep: "#6f9d2d",
+                mint: "#dff1d2",
+                warning: "#ffb347",
+                danger: "#e67452"
+            },
+            voices: {
+                en: ["Samantha", "Eddy (英语（美国）)", "Reed (英语（美国）)"],
+                zh: ["Tingting", "Eddy (中文（中国大陆）)", "Reed (中文（中国大陆）)"]
+            }
+        };
+
+        const RAW_THEME = window.LEMON_GRE_THEME || {};
+        const THEME_CONFIG = {
+            ...DEFAULT_THEME,
+            ...RAW_THEME,
+            colors: {
+                ...DEFAULT_THEME.colors,
+                ...(RAW_THEME.colors || {})
+            },
+            voices: {
+                en: Array.isArray(RAW_THEME.voices?.en) && RAW_THEME.voices.en.length ? RAW_THEME.voices.en : DEFAULT_THEME.voices.en,
+                zh: Array.isArray(RAW_THEME.voices?.zh) && RAW_THEME.voices.zh.length ? RAW_THEME.voices.zh : DEFAULT_THEME.voices.zh
+            }
+        };
+
+        function applyThemeConfig(config) {
+            const root = document.documentElement;
+            const colorMap = {
+                "--bg-cream": config.colors.bgCream,
+                "--bg-mint": config.colors.bgMint,
+                "--ink": config.colors.ink,
+                "--ink-soft": config.colors.inkSoft,
+                "--lemon": config.colors.lemon,
+                "--lime": config.colors.lime,
+                "--lime-deep": config.colors.limeDeep,
+                "--mint": config.colors.mint,
+                "--warning": config.colors.warning,
+                "--danger": config.colors.danger
+            };
+
+            Object.entries(colorMap).forEach(([key, value]) => {
+                if (value) {
+                    root.style.setProperty(key, value);
+                }
+            });
+
+            if (config.displayName) {
+                document.title = config.displayName;
+            }
+
+            const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+            if (themeColorMeta && config.colors?.lime) {
+                themeColorMeta.setAttribute("content", config.colors.lime);
+            }
+        }
+
+        function normalizeVoiceName(value) {
+            return String(value || "").trim().toLowerCase();
+        }
+
+        function getThemeVoiceNames(langPrefix) {
+            const lang = String(langPrefix || "").toLowerCase();
+            return lang.startsWith("zh") ? THEME_CONFIG.voices.zh : THEME_CONFIG.voices.en;
+        }
+
+        applyThemeConfig(THEME_CONFIG);
+
+        const STORAGE_KEY = "gre-lemon-words-v1";
+        const SESSION_KEY = "gre-lemon-session-v1";
+        const BANKS_KEY = "gre-lemon-banks-v1";
+        const ACTIVE_BANKS_KEY = "gre-lemon-active-banks-v1";
+        const DEFAULT_LOW_FREQ_GAP = 4;
+        const DEFAULT_FAMILIAR_GAP = 2;
+        const FOCUS_REPEAT_DELAY = 4;
+        const SWIPE_THRESHOLD = 48;
+
+        function clamp(value, min, max) {
+            return Math.min(max, Math.max(min, value));
+        }
+
+        function normalizePhonetic(value) {
+            return String(value || "").trim().replace(/^[/\[]+/, "").replace(/[/\]]+$/, "");
+        }
+
+        function normalizeWordRecord(item, currentRound = 1) {
+            const mode = item.mode === "low" ? "low" : "normal";
+            const familiarity = ["focus", "familiar", "normal"].includes(item.familiarity) ? item.familiarity : "normal";
+            return {
+                ...item,
+                mode,
+                familiarity,
+                phonetic: normalizePhonetic(item.phonetic || ""),
+                lowFreqEvery: clamp(Number(item.lowFreqEvery) || DEFAULT_LOW_FREQ_GAP, 2, 12),
+                nextDueRound: Math.max(1, Number(item.nextDueRound) || currentRound),
+                bankIds: Array.from(new Set(Array.isArray(item.bankIds) ? item.bankIds.filter(Boolean) : []))
+            };
+        }
+
+        function normalizeBankRecord(item) {
+            return {
+                id: String(item.id || `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`),
+                name: String(item.name || "未命名词库").trim() || "未命名词库",
+                sourceType: String(item.sourceType || "manual"),
+                createdAt: item.createdAt || new Date().toISOString()
+            };
+        }
+
+        function makeBankId(prefix = "bank") {
+            return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        }
+
+        function getRoundGap(word) {
+            if (!word) return 1;
+            if (word.mode === "low") return clamp(Number(word.lowFreqEvery) || DEFAULT_LOW_FREQ_GAP, 2, 12);
+            if (word.familiarity === "familiar") return DEFAULT_FAMILIAR_GAP;
+            return 1;
+        }
+
+        function getWordStateLabel(word) {
+            if (!word) return "常规";
+            if (word.mode === "low") return "低频";
+            if (word.familiarity === "focus") return "重点";
+            if (word.familiarity === "familiar") return "熟悉";
+            return "常规";
+        }
+
+        function getWordStateClass(word) {
+            if (!word) return "normal";
+            if (word.mode === "low") return "low";
+            if (word.familiarity === "focus") return "focus";
+            if (word.familiarity === "familiar") return "familiar";
+            return "normal";
+        }
+
+        function getWordFrequencyHint(word) {
+            if (!word) return "";
+            if (word.mode === "low") return `已进入低频召回，约每 ${getRoundGap(word)} 轮回来一次。`;
+            if (word.familiarity === "focus") return "已标记为重点复习，会保持每轮出现，并优先追加复习。";
+            if (word.familiarity === "familiar") return "已标记为熟悉，会隔一轮再回来。";
+            return "当前是常规频率，每一轮都会出现一次。";
+        }
+
+        function createWord(word, meaning, phonetic = "", currentRound = 1) {
+            return {
+                id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
+                word,
+                meaning,
+                phonetic: normalizePhonetic(phonetic),
+                mode: "normal",
+                familiarity: "normal",
+                lowFreqEvery: DEFAULT_LOW_FREQ_GAP,
+                nextDueRound: currentRound,
+                createdAt: new Date().toISOString()
+            };
+        }
+
+        function safeParse(key, fallback) {
+            try {
+                const raw = localStorage.getItem(key);
+                return raw ? JSON.parse(raw) : fallback;
+            } catch (error) {
+                return fallback;
+            }
+        }
+
+        function downloadBlob(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const anchor = document.createElement("a");
+            anchor.href = url;
+            anchor.download = filename;
+            document.body.appendChild(anchor);
+            anchor.click();
+            anchor.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+
+        function wait(ms) {
+            return new Promise((resolve) => setTimeout(resolve, ms));
+        }
+
+        createApp({
+            setup() {
+                const loadedWords = safeParse(STORAGE_KEY, []);
+                const loadedSession = safeParse(SESSION_KEY, {});
+                const loadedBanks = safeParse(BANKS_KEY, []);
+                const loadedActiveBankIds = safeParse(ACTIVE_BANKS_KEY, []);
+
+                const words = ref(
+                    (Array.isArray(loadedWords) ? loadedWords : []).map((item) =>
+                        normalizeWordRecord(item, Number(loadedSession.sessionRound) || 1)
+                    )
+                );
+                const sessionRound = ref(Number(loadedSession.sessionRound) || 1);
+                const currentIndex = ref(Number(loadedSession.currentIndex) || 0);
+                const currentQueueIds = ref(Array.isArray(loadedSession.currentQueueIds) ? loadedSession.currentQueueIds : []);
+                const builtInBanks = ref(Array.isArray(window.GRE_WORD_BANKS) ? window.GRE_WORD_BANKS : []);
+                const wordBanks = ref((Array.isArray(loadedBanks) ? loadedBanks : []).map(normalizeBankRecord));
+                const activeBankIds = ref(Array.isArray(loadedActiveBankIds) ? loadedActiveBankIds.filter(Boolean) : []);
+                const themeBrandTag = computed(() => THEME_CONFIG.brandTag || "Lemon GRE");
+                const themeBrandCopy = computed(() => THEME_CONFIG.brandCopy || DEFAULT_THEME.brandCopy);
+
+                const showAddModal = ref(false);
+                const showLibrary = ref(false);
+                const showAudioModal = ref(false);
+                const showQuickActions = ref(false);
+                const newWordsInput = ref("");
+                const libraryKeyword = ref("");
+                const addTextarea = ref(null);
+                const importFileInput = ref(null);
+                const importMode = ref("new");
+                const importTargetBankId = ref("");
+                const importBankName = ref("");
+                const importDragOver = ref(false);
+                const selectedBankIds = ref([]);
+                const importPreview = reactive({
+                    sourceName: "",
+                    entries: [],
+                    sourceType: "",
+                    error: ""
+                });
+
+                const touchStartX = ref(0);
+                const suppressTapUntil = ref(0);
+                const voices = ref([]);
+                const isPlayingDaily = ref(false);
+                const isExportingAudio = ref(false);
+                const audioToken = ref(0);
+                const toast = reactive({
+                    visible: false,
+                    text: "",
+                    tone: "neutral",
+                    timer: null
+                });
+
+                const wordsMap = computed(() => new Map(words.value.map((item) => [item.id, item])));
+                const activeBankIdSet = computed(() => new Set(activeBankIds.value));
+                const bankMemberCountMap = computed(() => {
+                    const counts = new Map();
+                    words.value.forEach((item) => {
+                        (item.bankIds || []).forEach((bankId) => {
+                            counts.set(bankId, (counts.get(bankId) || 0) + 1);
+                        });
+                    });
+                    return counts;
+                });
+                const bankSummaries = computed(() => wordBanks.value.map((bank) => ({
+                    ...bank,
+                    memberCount: bankMemberCountMap.value.get(bank.id) || 0,
+                    isActive: !activeBankIds.value.length || activeBankIdSet.value.has(bank.id),
+                    isSelected: selectedBankIds.value.includes(bank.id)
+                })));
+                const roundQueue = computed(() => currentQueueIds.value.map((id) => wordsMap.value.get(id)).filter(Boolean));
+                const currentWord = computed(() => roundQueue.value[currentIndex.value] || null);
+                const progressPercent = computed(() => {
+                    if (!roundQueue.value.length) return 0;
+                    return ((currentIndex.value + 1) / roundQueue.value.length) * 100;
+                });
+                const remainingCount = computed(() => {
+                    if (!roundQueue.value.length) return 0;
+                    return Math.max(roundQueue.value.length - currentIndex.value - 1, 0);
+                });
+                const normalCount = computed(() => words.value.filter((item) => item.mode !== "low").length);
+                const lowCount = computed(() => words.value.filter((item) => item.mode === "low").length);
+                const currentBankTitle = computed(() => {
+                    if (!wordBanks.value.length) return "当前词库";
+                    const activeBanks = !activeBankIds.value.length
+                        ? wordBanks.value
+                        : wordBanks.value.filter((item) => activeBankIdSet.value.has(item.id));
+
+                    if (!activeBanks.length) return "当前词库";
+                    if (activeBanks.length === 1) return activeBanks[0].name;
+                    if (activeBanks.length === 2) return `${activeBanks[0].name} + ${activeBanks[1].name}`;
+
+                    const preview = activeBanks.slice(0, 2).map((item) => item.name).join(" + ");
+                    return `${preview} 等 ${activeBanks.length} 个词库`;
+                });
+                const formattedDate = computed(() => new Intl.DateTimeFormat("zh-CN", {
+                    month: "long",
+                    day: "numeric",
+                    weekday: "short"
+                }).format(new Date()));
+                const todayAudioTitle = computed(() => `${formattedDate.value} · 第 ${sessionRound.value} 轮 · ${roundQueue.value.length} 词`);
+                const audioHint = computed(() => {
+                    if (location.protocol === "file:") {
+                        return "当前是 file:// 打开。连续播放没问题；导出音频时，建议用 localhost 打开页面，浏览器兼容性会更稳。";
+                    }
+                    return "导出音频时，请选择“当前标签页”并勾选共享音频。若浏览器不支持，会自动降级为导出朗读脚本。";
+                });
+                const filteredWords = computed(() => {
+                    const keyword = libraryKeyword.value.trim().toLowerCase();
+                    if (!keyword) return words.value;
+                    return words.value.filter((item) => {
+                        const wordText = (item.word || "").toLowerCase();
+                        const meaningText = (item.meaning || "").toLowerCase();
+                        const phoneticText = (item.phonetic || "").toLowerCase();
+                        return wordText.includes(keyword) || meaningText.includes(keyword) || phoneticText.includes(keyword);
+                    });
+                });
+
+                function persistWords() {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(words.value));
+                }
+
+                function persistBanks() {
+                    localStorage.setItem(BANKS_KEY, JSON.stringify(wordBanks.value));
+                }
+
+                function persistActiveBanks() {
+                    localStorage.setItem(ACTIVE_BANKS_KEY, JSON.stringify(activeBankIds.value));
+                }
+
+                function persistSession() {
+                    localStorage.setItem(SESSION_KEY, JSON.stringify({
+                        sessionRound: sessionRound.value,
+                        currentIndex: currentIndex.value,
+                        currentQueueIds: currentQueueIds.value
+                    }));
+                }
+
+                function persistAll() {
+                    persistWords();
+                    persistBanks();
+                    persistActiveBanks();
+                    persistSession();
+                }
+
+                function migrateLegacyDefaultBank() {
+                    const builtinBank = builtInBanks.value[0];
+                    if (!builtinBank) return false;
+
+                    const legacyIndex = wordBanks.value.findIndex((bank) => (
+                        bank.id === "default-bank" || bank.name === "默认词库"
+                    ));
+
+                    if (legacyIndex < 0) return false;
+
+                    const legacyBank = wordBanks.value[legacyIndex];
+                    const legacyId = legacyBank.id;
+                    const targetId = builtinBank.id;
+                    const targetBank = wordBanks.value.find((bank, index) => index !== legacyIndex && bank.id === targetId);
+
+                    words.value.forEach((word) => {
+                        const bankIds = Array.isArray(word.bankIds) ? word.bankIds : [];
+                        if (!bankIds.includes(legacyId)) return;
+                        word.bankIds = Array.from(new Set(bankIds.map((bankId) => bankId === legacyId ? targetId : bankId)));
+                    });
+
+                    activeBankIds.value = Array.from(new Set(activeBankIds.value.map((bankId) => bankId === legacyId ? targetId : bankId)));
+                    selectedBankIds.value = Array.from(new Set(selectedBankIds.value.map((bankId) => bankId === legacyId ? targetId : bankId)));
+
+                    if (targetBank) {
+                        wordBanks.value.splice(legacyIndex, 1);
+                    } else {
+                        legacyBank.id = targetId;
+                        legacyBank.name = builtinBank.name;
+                        legacyBank.sourceType = "builtin";
+                    }
+
+                    return true;
+                }
+
+                function pushToast(text, tone = "neutral") {
+                    if (toast.timer) clearTimeout(toast.timer);
+                    toast.text = text;
+                    toast.tone = tone;
+                    toast.visible = true;
+                    toast.timer = setTimeout(() => {
+                        toast.visible = false;
+                    }, 2600);
+                }
+
+                function ensureBankRecord(bank) {
+                    const normalized = normalizeBankRecord(bank);
+                    const existing = wordBanks.value.find((item) => item.id === normalized.id);
+                    if (!existing) {
+                        wordBanks.value.push(normalized);
+                        persistBanks();
+                    }
+                    return normalized;
+                }
+
+                function ensureWordBankTag(word, bankId) {
+                    if (!bankId) return false;
+                    const current = Array.isArray(word.bankIds) ? word.bankIds : [];
+                    if (current.includes(bankId)) return false;
+                    word.bankIds = [...current, bankId];
+                    return true;
+                }
+
+                function wordBelongsToActiveBanks(word) {
+                    if (!activeBankIds.value.length) return true;
+                    return (word.bankIds || []).some((bankId) => activeBankIdSet.value.has(bankId));
+                }
+
+                function deriveBankName(rawName) {
+                    const cleaned = String(rawName || "").replace(/\.[^.]+$/, "").trim();
+                    return cleaned || `词库 ${new Date().toISOString().slice(0, 10)}`;
+                }
+
+                function clearImportPreview() {
+                    importPreview.sourceName = "";
+                    importPreview.entries = [];
+                    importPreview.sourceType = "";
+                    importPreview.error = "";
+                }
+
+                function toggleQuickActions() {
+                    showQuickActions.value = !showQuickActions.value;
+                }
+
+                function openAddModalFromQuickActions() {
+                    showQuickActions.value = false;
+                    showAddModal.value = true;
+                }
+
+                function openImportPickerFromQuickActions() {
+                    showQuickActions.value = false;
+                    showAddModal.value = true;
+                    nextTick(() => {
+                        openImportPicker();
+                    });
+                }
+
+                function handleDocumentClick(event) {
+                    const target = event.target;
+                    if (target && target.closest && target.closest(".quick-menu-wrap")) {
+                        return;
+                    }
+                    showQuickActions.value = false;
+                }
+
+                function generateQueueIds(startRound) {
+                    let effectiveRound = Math.max(1, Number(startRound) || 1);
+                    const build = () => words.value
+                        .filter((item) => wordBelongsToActiveBanks(item))
+                        .filter((item) => effectiveRound >= (Number(item.nextDueRound) || 1))
+                        .map((item) => item.id);
+
+                    let ids = build();
+
+                    if (!ids.length && words.value.some((item) => wordBelongsToActiveBanks(item))) {
+                        const nextDueCandidates = words.value
+                            .filter((item) => wordBelongsToActiveBanks(item))
+                            .map((item) => Number(item.nextDueRound) || effectiveRound)
+                            .filter((value) => Number.isFinite(value));
+
+                        if (nextDueCandidates.length) {
+                            effectiveRound = Math.max(effectiveRound, Math.min(...nextDueCandidates));
+                            ids = build();
+                        }
+                    }
+
+                    return { ids, effectiveRound };
+                }
+
+                function ensureQueue() {
+                    currentQueueIds.value = currentQueueIds.value.filter((id) => wordsMap.value.has(id));
+
+                    if (!currentQueueIds.value.length && words.value.length) {
+                        const { ids, effectiveRound } = generateQueueIds(sessionRound.value);
+                        sessionRound.value = effectiveRound;
+                        currentQueueIds.value = ids;
+                        currentIndex.value = 0;
+                    }
+
+                    if (currentIndex.value >= roundQueue.value.length) {
+                        currentIndex.value = Math.max(roundQueue.value.length - 1, 0);
+                    }
+
+                    persistSession();
+                }
+
+                function finalizeRoundSchedule() {
+                    const queueSet = new Set(currentQueueIds.value);
+                    let changed = false;
+
+                    words.value.forEach((item) => {
+                        if (queueSet.has(item.id)) {
+                            const nextDueRound = sessionRound.value + getRoundGap(item);
+                            if (item.nextDueRound !== nextDueRound) {
+                                item.nextDueRound = nextDueRound;
+                                changed = true;
+                            }
+                        }
+                    });
+
+                    if (changed) persistWords();
+                }
+
+                function startRound(options = {}) {
+                    const { advance = false, silent = false } = options;
+                    const finishedRound = sessionRound.value;
+
+                    if (advance) {
+                        finalizeRoundSchedule();
+                    }
+
+                    const baseRound = advance ? finishedRound + 1 : sessionRound.value;
+                    const { ids, effectiveRound } = generateQueueIds(baseRound);
+                    sessionRound.value = effectiveRound;
+                    currentQueueIds.value = ids;
+                    currentIndex.value = 0;
+                    persistSession();
+
+                    if (advance && !silent) {
+                        pushToast(`第 ${finishedRound} 轮完成，已切到第 ${sessionRound.value} 轮。`, "success");
+                    }
+                }
+
+                function nextWord() {
+                    if (!roundQueue.value.length) return;
+
+                    if (currentIndex.value < roundQueue.value.length - 1) {
+                        currentIndex.value += 1;
+                        persistSession();
+                        return;
+                    }
+
+                    startRound({ advance: true });
+                }
+
+                function goNextFromTap() {
+                    if (Date.now() < suppressTapUntil.value) return;
+                    nextWord();
+                }
+
+                function insertWordIntoCurrentQueue(wordId) {
+                    if (currentQueueIds.value.includes(wordId)) return;
+
+                    const wordOrder = words.value.findIndex((item) => item.id === wordId);
+                    let insertAt = currentQueueIds.value.length;
+
+                    for (let index = currentIndex.value + 1; index < currentQueueIds.value.length; index += 1) {
+                        const queueOrder = words.value.findIndex((item) => item.id === currentQueueIds.value[index]);
+                        if (queueOrder > wordOrder) {
+                            insertAt = index;
+                            break;
+                        }
+                    }
+
+                    currentQueueIds.value.splice(insertAt, 0, wordId);
+                    persistSession();
+                }
+
+                function removeFutureOccurrences(wordId) {
+                    let changed = false;
+                    currentQueueIds.value = currentQueueIds.value.filter((id, index) => {
+                        const shouldDrop = index > currentIndex.value && id === wordId;
+                        if (shouldDrop) changed = true;
+                        return !shouldDrop;
+                    });
+
+                    if (changed) persistSession();
+                    return changed;
+                }
+
+                function queueFocusRepeat(wordId) {
+                    const existsInFuture = currentQueueIds.value.some((id, index) => index > currentIndex.value && id === wordId);
+                    if (existsInFuture) return false;
+
+                    const insertAt = Math.min(currentIndex.value + FOCUS_REPEAT_DELAY + 1, currentQueueIds.value.length);
+                    currentQueueIds.value.splice(insertAt, 0, wordId);
+                    persistSession();
+                    return true;
+                }
+
+                function markWordAsFocus(targetWord) {
+                    const word = targetWord || currentWord.value;
+                    if (!word) return;
+
+                    word.mode = "normal";
+                    word.familiarity = "focus";
+                    word.nextDueRound = sessionRound.value + 1;
+                    persistWords();
+
+                    const repeated = queueFocusRepeat(word.id);
+                    pushToast(
+                        repeated
+                            ? `${word.word} 已标记为不熟悉，本轮会再出现一次。`
+                            : `${word.word} 已标记为不熟悉，后续会保持高频。`,
+                        "warning"
+                    );
+
+                    if (currentWord.value && currentWord.value.id === word.id) {
+                        nextWord();
+                    }
+                }
+
+                function markCurrentAsFocus() {
+                    markWordAsFocus(currentWord.value);
+                }
+
+                function markWordAsFamiliar(targetWord) {
+                    const word = targetWord || currentWord.value;
+                    if (!word) return;
+
+                    word.mode = "normal";
+                    word.familiarity = "familiar";
+                    word.nextDueRound = sessionRound.value + DEFAULT_FAMILIAR_GAP;
+                    removeFutureOccurrences(word.id);
+                    persistWords();
+                    persistSession();
+                    pushToast(`${word.word} 已标记为熟悉，会隔轮出现。`, "success");
+
+                    if (currentWord.value && currentWord.value.id === word.id) {
+                        nextWord();
+                    }
+                }
+
+                function markCurrentAsFamiliar() {
+                    markWordAsFamiliar(currentWord.value);
+                }
+
+                function moveWordToLowFrequency(targetWord) {
+                    const word = targetWord || currentWord.value;
+                    if (!word) return;
+
+                    word.mode = "low";
+                    word.familiarity = "familiar";
+                    word.lowFreqEvery = clamp(Number(word.lowFreqEvery) || DEFAULT_LOW_FREQ_GAP, 2, 12);
+                    word.nextDueRound = sessionRound.value + word.lowFreqEvery;
+                    removeFutureOccurrences(word.id);
+                    persistWords();
+                    pushToast(`${word.word} 已降为低频召回。`, "success");
+
+                    if (currentWord.value && currentWord.value.id === word.id) {
+                        nextWord();
+                    } else {
+                        persistSession();
+                    }
+                }
+
+                function moveCurrentToLowFrequency() {
+                    moveWordToLowFrequency(currentWord.value);
+                }
+
+                function restoreWord(word) {
+                    if (!word) return;
+
+                    word.mode = "normal";
+                    word.familiarity = "normal";
+                    word.nextDueRound = sessionRound.value;
+                    persistWords();
+                    insertWordIntoCurrentQueue(word.id);
+                    pushToast(`${word.word} 已恢复到常规频率。`, "success");
+                }
+
+                function closeAddModal() {
+                    showAddModal.value = false;
+                }
+
+                function getImportBankConfig(options = {}) {
+                    if (options.bankId) {
+                        return {
+                            bankId: options.bankId,
+                            created: false
+                        };
+                    }
+
+                    if (importMode.value === "append") {
+                        if (!importTargetBankId.value) {
+                            throw new Error("NO_TARGET_BANK");
+                        }
+
+                        return {
+                            bankId: importTargetBankId.value,
+                            created: false
+                        };
+                    }
+
+                    const bankName = deriveBankName(options.bankName || importBankName.value || options.sourceName || importPreview.sourceName);
+                    const bank = ensureBankRecord({
+                        id: makeBankId("bank"),
+                        name: bankName,
+                        sourceType: options.sourceType || importPreview.sourceType || "manual"
+                    });
+
+                    return {
+                        bankId: bank.id,
+                        created: true,
+                        bankName: bank.name
+                    };
+                }
+
+                function mergeEntries(entries, options = {}) {
+                    let added = 0;
+                    let updated = 0;
+                    let invalid = 0;
+                    const newIds = [];
+                    const hasValidEntry = entries.some((entry) => String(entry.word || "").trim() && String(entry.meaning || "").trim());
+                    if (!hasValidEntry) {
+                        return { added, updated, invalid: entries.length || invalid };
+                    }
+                    const importBank = getImportBankConfig(options);
+
+                    entries.forEach((entry) => {
+                        const wordText = String(entry.word || "").trim();
+                        const meaningText = String(entry.meaning || "").trim();
+                        const phoneticText = normalizePhonetic(entry.phonetic || "");
+
+                        if (!wordText || !meaningText) {
+                            invalid += 1;
+                            return;
+                        }
+
+                        const existing = words.value.find((item) => item.word.toLowerCase() === wordText.toLowerCase());
+
+                        if (existing) {
+                            existing.meaning = meaningText;
+                            if (phoneticText) existing.phonetic = phoneticText;
+                            ensureWordBankTag(existing, importBank.bankId);
+                            updated += 1;
+                            return;
+                        }
+
+                        const word = createWord(wordText, meaningText, phoneticText, sessionRound.value);
+                        word.bankIds = [importBank.bankId];
+                        words.value.push(word);
+                        newIds.push(word.id);
+                        added += 1;
+                    });
+
+                    if (!currentQueueIds.value.length) {
+                        const { ids, effectiveRound } = generateQueueIds(sessionRound.value);
+                        sessionRound.value = effectiveRound;
+                        currentQueueIds.value = ids;
+                        currentIndex.value = 0;
+                    } else if (newIds.length) {
+                        currentQueueIds.value.push(...newIds);
+                    }
+
+                    persistAll();
+                    return { added, updated, invalid, bankId: importBank.bankId, createdBank: importBank.created, bankName: importBank.bankName };
+                }
+
+                function addWords() {
+                    const lines = newWordsInput.value.split(/\n+/).map((line) => line.trim()).filter(Boolean);
+                    if (!lines.length) {
+                        pushToast("先粘贴一批词再保存。", "warning");
+                        return;
+                    }
+
+                    const entries = lines.map((line) => {
+                        const parts = line
+                            .split(/\s*(?:,|，|\t|\|)\s*/)
+                            .map((part) => part.trim())
+                            .filter(Boolean);
+
+                        if (parts.length < 2) {
+                            return { word: "", meaning: "", phonetic: "" };
+                        }
+
+                        const [word, meaning, phonetic = ""] = parts;
+                        return { word, meaning, phonetic };
+                    });
+
+                    let result;
+                    try {
+                        result = mergeEntries(entries, { sourceType: "manual", sourceName: "手动导入" });
+                    } catch (error) {
+                        if (error.message === "NO_TARGET_BANK") {
+                            pushToast("先选择一个要继续扩充的词库，或改成“新建词库”。", "warning");
+                            return;
+                        }
+                        throw error;
+                    }
+
+                    if (!result.added && !result.updated) {
+                        pushToast("没有识别到可导入的词条。请按“单词,中文,音标”格式粘贴。", "warning");
+                        return;
+                    }
+
+                    newWordsInput.value = "";
+                    showAddModal.value = false;
+
+                    const invalidText = result.invalid ? `，忽略 ${result.invalid} 行` : "";
+                    pushToast(`新增 ${result.added} 个，更新 ${result.updated} 个${invalidText}。`, "success");
+                }
+
+                function importBuiltInBank(bankId) {
+                    const bank = builtInBanks.value.find((item) => item.id === bankId);
+                    if (!bank) {
+                        pushToast("没有找到这份内置词库。", "error");
+                        return;
+                    }
+
+                    const entries = (bank.items || []).map((item) => ({
+                        word: item[0],
+                        meaning: item[1],
+                        phonetic: item[2]
+                    }));
+                    const bankRecord = ensureBankRecord({
+                        id: bank.id,
+                        name: bank.name,
+                        sourceType: "builtin"
+                    });
+                    const result = mergeEntries(entries, {
+                        bankId: bankRecord.id,
+                        sourceType: "builtin",
+                        sourceName: bank.name
+                    });
+
+                    if (!result.added && !result.updated) {
+                        pushToast(`${bank.name} 没有可导入的新词。`, "warning");
+                        return;
+                    }
+
+                    const updateText = result.updated ? `，更新 ${result.updated} 个` : "";
+                    pushToast(`已导入 ${bank.name}：新增 ${result.added} 个${updateText}。`, "success");
+                    showAddModal.value = false;
+                }
+
+                function formatPhonetic(value) {
+                    return normalizePhonetic(value);
+                }
+
+                function parseTextLine(line) {
+                    const parts = String(line || "")
+                        .split(/\s*(?:,|，|\t|\|)\s*/)
+                        .map((part) => part.trim())
+                        .filter(Boolean);
+
+                    if (parts.length < 2) return null;
+                    const [word, meaning, phonetic = ""] = parts;
+                    return { word, meaning, phonetic };
+                }
+
+                function parseRowsToEntries(rows) {
+                    const cleanedRows = rows
+                        .map((row) => Array.isArray(row) ? row.map((cell) => String(cell ?? "").trim()) : [String(row ?? "").trim()])
+                        .filter((row) => row.some(Boolean));
+
+                    if (!cleanedRows.length) return [];
+
+                    const headerCandidates = {
+                        word: ["word", "单词", "vocabulary", "vocab"],
+                        meaning: ["paraphrase", "paraphrase (w/ pos)", "meaning", "释义", "中文", "解释"],
+                        phonetic: ["phonetic", "phonetics", "uk phonetics", "us phonetics", "音标", "发音"]
+                    };
+
+                    const findIndexByHeader = (row, keywords) => row.findIndex((cell) => {
+                        const value = String(cell || "").toLowerCase();
+                        return keywords.some((keyword) => value.includes(keyword));
+                    });
+
+                    let headerRowIndex = -1;
+                    let wordIndex = -1;
+                    let meaningIndex = -1;
+                    let phoneticIndex = -1;
+
+                    for (let index = 0; index < Math.min(cleanedRows.length, 6); index += 1) {
+                        const row = cleanedRows[index];
+                        const maybeWord = findIndexByHeader(row, headerCandidates.word);
+                        const maybeMeaning = findIndexByHeader(row, headerCandidates.meaning);
+                        if (maybeWord !== -1 && maybeMeaning !== -1) {
+                            headerRowIndex = index;
+                            wordIndex = maybeWord;
+                            meaningIndex = maybeMeaning;
+                            phoneticIndex = findIndexByHeader(row, headerCandidates.phonetic);
+                            break;
+                        }
+                    }
+
+                    const dataRows = headerRowIndex === -1 ? cleanedRows : cleanedRows.slice(headerRowIndex + 1);
+                    const entries = [];
+
+                    dataRows.forEach((row) => {
+                        if (headerRowIndex !== -1) {
+                            const word = row[wordIndex] || "";
+                            const meaning = row[meaningIndex] || "";
+                            const phonetic = phoneticIndex !== -1 ? row[phoneticIndex] || "" : "";
+                            if (word && meaning) {
+                                entries.push({ word, meaning, phonetic });
+                            }
+                            return;
+                        }
+
+                        if (row.length === 1) {
+                            const parsed = parseTextLine(row[0]);
+                            if (parsed) entries.push(parsed);
+                            return;
+                        }
+
+                        const [word, meaning, phonetic = ""] = row;
+                        if (word && meaning) {
+                            entries.push({ word, meaning, phonetic });
+                        }
+                    });
+
+                    return entries;
+                }
+
+                async function parseImportFile(file) {
+                    const name = file.name || "未命名文件";
+                    const extension = name.includes(".") ? name.split(".").pop().toLowerCase() : "";
+
+                    if (["xlsx", "xls", "xlsm"].includes(extension)) {
+                        if (!window.XLSX) {
+                            throw new Error("XLSX_NOT_AVAILABLE");
+                        }
+                        const buffer = await file.arrayBuffer();
+                        const workbook = window.XLSX.read(buffer, { type: "array" });
+                        const sheetName = workbook.SheetNames[0];
+                        const rows = window.XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
+                            header: 1,
+                            defval: ""
+                        });
+                        return {
+                            sourceType: "excel",
+                            entries: parseRowsToEntries(rows)
+                        };
+                    }
+
+                    const text = await file.text();
+                    if (extension === "csv") {
+                        const workbook = window.XLSX
+                            ? window.XLSX.read(text, { type: "string" })
+                            : null;
+                        if (workbook) {
+                            const rows = window.XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {
+                                header: 1,
+                                defval: ""
+                            });
+                            return {
+                                sourceType: "csv",
+                                entries: parseRowsToEntries(rows)
+                            };
+                        }
+                    }
+
+                    return {
+                        sourceType: "text",
+                        entries: text
+                            .split(/\n+/)
+                            .map((line) => parseTextLine(line))
+                            .filter(Boolean)
+                    };
+                }
+
+                async function handleImportFile(file) {
+                    clearImportPreview();
+                    if (!file) return;
+
+                    try {
+                        const parsed = await parseImportFile(file);
+                        importPreview.sourceName = file.name;
+                        importPreview.entries = parsed.entries;
+                        importPreview.sourceType = parsed.sourceType;
+                        importPreview.error = "";
+                        importBankName.value = deriveBankName(file.name);
+
+                        if (!parsed.entries.length) {
+                            importPreview.error = "没有识别到可导入的单词列。";
+                            pushToast("文件已读取，但没有识别到有效词条。", "warning");
+                            return;
+                        }
+
+                        pushToast(`已读取 ${parsed.entries.length} 条词条，确认后导入。`, "success");
+                    } catch (error) {
+                        importPreview.error = error.message === "XLSX_NOT_AVAILABLE"
+                            ? "当前页面没有加载 Excel 解析器。"
+                            : "文件解析失败，请检查格式。";
+                        pushToast(importPreview.error, "error");
+                    }
+                }
+
+                function openImportPicker() {
+                    importFileInput.value?.click();
+                }
+
+                async function handleImportInput(event) {
+                    const file = event.target?.files?.[0];
+                    await handleImportFile(file);
+                    if (event.target) {
+                        event.target.value = "";
+                    }
+                }
+
+                function handleImportDragOver() {
+                    importDragOver.value = true;
+                }
+
+                function handleImportDragLeave() {
+                    importDragOver.value = false;
+                }
+
+                async function handleImportDrop(event) {
+                    event.preventDefault();
+                    importDragOver.value = false;
+                    const file = event.dataTransfer?.files?.[0];
+                    await handleImportFile(file);
+                }
+
+                function applyImportPreview() {
+                    if (!importPreview.entries.length) {
+                        pushToast("先拖入或选择一个词表文件。", "warning");
+                        return;
+                    }
+
+                    let result;
+                    try {
+                        result = mergeEntries(importPreview.entries, {
+                            sourceType: importPreview.sourceType || "file",
+                            sourceName: importPreview.sourceName,
+                            bankName: importBankName.value
+                        });
+                    } catch (error) {
+                        if (error.message === "NO_TARGET_BANK") {
+                            pushToast("先选择一个要继续扩充的词库，或改成“新建词库”。", "warning");
+                            return;
+                        }
+                        throw error;
+                    }
+
+                    const suffix = result.updated ? `，更新 ${result.updated} 个` : "";
+                    pushToast(`已导入 ${importPreview.sourceName}：新增 ${result.added} 个${suffix}。`, "success");
+                    clearImportPreview();
+                }
+
+                function toggleBankSelection(bankId) {
+                    if (selectedBankIds.value.includes(bankId)) {
+                        selectedBankIds.value = selectedBankIds.value.filter((item) => item !== bankId);
+                        return;
+                    }
+                    selectedBankIds.value = [...selectedBankIds.value, bankId];
+                }
+
+                function applyActiveBanks(nextIds) {
+                    const normalized = Array.from(new Set(nextIds.filter(Boolean)));
+                    activeBankIds.value = normalized.length === wordBanks.value.length ? [] : normalized;
+                    currentQueueIds.value = [];
+                    currentIndex.value = 0;
+                    persistActiveBanks();
+                    ensureQueue();
+                }
+
+                function focusSingleBank(bankId) {
+                    applyActiveBanks([bankId]);
+                    const bank = wordBanks.value.find((item) => item.id === bankId);
+                    pushToast(`当前学习词库切到 ${bank?.name || "目标词库"}。`, "success");
+                }
+
+                function toggleBankActive(bankId) {
+                    const baseline = activeBankIds.value.length ? [...activeBankIds.value] : wordBanks.value.map((item) => item.id);
+                    const nextIds = baseline.includes(bankId)
+                        ? baseline.filter((item) => item !== bankId)
+                        : [...baseline, bankId];
+
+                    if (!nextIds.length) {
+                        pushToast("至少保留一个学习中的词库。", "warning");
+                        return;
+                    }
+
+                    applyActiveBanks(nextIds);
+                }
+
+                function resetActiveBanks() {
+                    activeBankIds.value = [];
+                    currentQueueIds.value = [];
+                    currentIndex.value = 0;
+                    persistActiveBanks();
+                    ensureQueue();
+                    pushToast("已切回全部词库。", "success");
+                }
+
+                function mergeSelectedBanks() {
+                    if (selectedBankIds.value.length < 2) {
+                        pushToast("至少勾选两个词库再合并。", "warning");
+                        return;
+                    }
+
+                    const defaultName = bankSummaries.value
+                        .filter((item) => selectedBankIds.value.includes(item.id))
+                        .map((item) => item.name)
+                        .join(" + ");
+                    const bankName = window.prompt("新词库名称", defaultName);
+                    if (!bankName) return;
+
+                    const bank = ensureBankRecord({
+                        id: makeBankId("merged"),
+                        name: bankName,
+                        sourceType: "merge"
+                    });
+
+                    let affected = 0;
+                    words.value.forEach((word) => {
+                        if ((word.bankIds || []).some((bankId) => selectedBankIds.value.includes(bankId))) {
+                            if (ensureWordBankTag(word, bank.id)) {
+                                affected += 1;
+                            }
+                        }
+                    });
+
+                    persistAll();
+                    selectedBankIds.value = [];
+                    pushToast(`已合并成新词库 ${bank.name}，包含 ${affected} 个词。`, "success");
+                }
+
+                function splitBank(bank) {
+                    const chunkText = window.prompt(`把“${bank.name}”按多少词一组拆分？`, "100");
+                    if (!chunkText) return;
+
+                    const chunkSize = Number(chunkText);
+                    if (!Number.isFinite(chunkSize) || chunkSize < 1) {
+                        pushToast("拆分数量必须是正整数。", "warning");
+                        return;
+                    }
+
+                    const members = words.value.filter((word) => (word.bankIds || []).includes(bank.id));
+                    if (!members.length) {
+                        pushToast("这个词库目前没有可拆分的单词。", "warning");
+                        return;
+                    }
+
+                    let created = 0;
+                    for (let index = 0; index < members.length; index += chunkSize) {
+                        const chunk = members.slice(index, index + chunkSize);
+                        const childBank = ensureBankRecord({
+                            id: makeBankId("split"),
+                            name: `${bank.name} ${String(created + 1).padStart(2, "0")}`,
+                            sourceType: "split"
+                        });
+                        chunk.forEach((word) => ensureWordBankTag(word, childBank.id));
+                        created += 1;
+                    }
+
+                    persistAll();
+                    pushToast(`已把 ${bank.name} 拆成 ${created} 个子词库。`, "success");
+                }
+
+                async function ensureVoices() {
+                    if (!("speechSynthesis" in window)) return [];
+
+                    const existing = window.speechSynthesis.getVoices();
+                    if (existing.length) {
+                        voices.value = existing;
+                        return existing;
+                    }
+
+                    return new Promise((resolve) => {
+                        let settled = false;
+
+                        const finish = () => {
+                            if (settled) return;
+                            settled = true;
+                            const loaded = window.speechSynthesis.getVoices();
+                            voices.value = loaded;
+                            resolve(loaded);
+                        };
+
+                        const handler = () => {
+                            window.speechSynthesis.removeEventListener("voiceschanged", handler);
+                            finish();
+                        };
+
+                        window.speechSynthesis.addEventListener("voiceschanged", handler);
+                        setTimeout(() => {
+                            window.speechSynthesis.removeEventListener("voiceschanged", handler);
+                            finish();
+                        }, 700);
+                    });
+                }
+
+                function pickVoice(langPrefix, preferredNames = []) {
+                    const voiceList = voices.value.length ? voices.value : (window.speechSynthesis?.getVoices?.() || []);
+                    if (!voiceList.length) return null;
+
+                    const normalizedPreferred = preferredNames
+                        .map((name) => normalizeVoiceName(name))
+                        .filter(Boolean);
+
+                    for (const preferred of normalizedPreferred) {
+                        const exactMatch = voiceList.find((voice) => normalizeVoiceName(voice.name) === preferred);
+                        if (exactMatch) return exactMatch;
+
+                        const partialMatch = voiceList.find((voice) => normalizeVoiceName(voice.name).includes(preferred));
+                        if (partialMatch) return partialMatch;
+                    }
+
+                    return (
+                        voiceList.find((voice) => voice.lang && voice.lang.toLowerCase().startsWith(langPrefix.toLowerCase())) ||
+                        voiceList.find((voice) => voice.lang && voice.lang.toLowerCase().includes(langPrefix.toLowerCase())) ||
+                        voiceList[0]
+                    );
+                }
+
+                async function speakText(text, options = {}) {
+                    if (!text || !("speechSynthesis" in window)) return;
+
+                    await ensureVoices();
+
+                    return new Promise((resolve) => {
+                        const utterance = new SpeechSynthesisUtterance(text);
+                        utterance.lang = options.lang || "en-US";
+                        utterance.rate = options.rate ?? 0.88;
+                        utterance.pitch = options.pitch ?? 1;
+                        utterance.volume = 1;
+
+                        const voice = pickVoice(utterance.lang, options.voiceNames || getThemeVoiceNames(utterance.lang));
+                        if (voice) utterance.voice = voice;
+
+                        utterance.onend = () => resolve();
+                        utterance.onerror = () => resolve();
+
+                        try {
+                            window.speechSynthesis.cancel();
+                            window.speechSynthesis.speak(utterance);
+                        } catch (error) {
+                            resolve();
+                        }
+                    });
+                }
+
+                async function speakCurrentWord(force = false) {
+                    if (!currentWord.value) return;
+                    if ((isPlayingDaily.value || isExportingAudio.value) && !force) return;
+                    if (!("speechSynthesis" in window)) return;
+                    await speakText(currentWord.value.word, { lang: "en-US", rate: 0.84 });
+                }
+
+                async function runDailySpeechSequence(token) {
+                    for (const item of roundQueue.value) {
+                        if (token !== audioToken.value) throw new Error("ABORTED");
+                        await speakText(item.word, { lang: "en-US", rate: 0.82 });
+                        if (token !== audioToken.value) throw new Error("ABORTED");
+                        await wait(260);
+                        await speakText(`中文意思，${item.meaning}`, { lang: "zh-CN", rate: 0.94 });
+                        if (token !== audioToken.value) throw new Error("ABORTED");
+                        await wait(680);
+                    }
+                }
+
+                async function playDailyAudio() {
+                    if (!roundQueue.value.length) {
+                        pushToast("当前轮次没有可播放的单词。", "warning");
+                        return;
+                    }
+
+                    if (!("speechSynthesis" in window)) {
+                        pushToast("当前浏览器不支持语音合成。", "error");
+                        return;
+                    }
+
+                    const token = audioToken.value + 1;
+                    audioToken.value = token;
+                    isPlayingDaily.value = true;
+
+                    pushToast("开始连续朗读当前轮次。", "neutral");
+
+                    try {
+                        await runDailySpeechSequence(token);
+                        if (token === audioToken.value) {
+                            pushToast("今日词单播放完成。", "success");
+                        }
+                    } catch (error) {
+                        if (error.message !== "ABORTED") {
+                            pushToast("播放被浏览器中断。", "warning");
+                        }
+                    } finally {
+                        if (token === audioToken.value) {
+                            isPlayingDaily.value = false;
+                        }
+                        window.speechSynthesis.cancel();
+                    }
+                }
+
+                function stopDailyPlayback() {
+                    audioToken.value += 1;
+                    isPlayingDaily.value = false;
+                    isExportingAudio.value = false;
+
+                    if ("speechSynthesis" in window) {
+                        window.speechSynthesis.cancel();
+                    }
+
+                    pushToast("已停止当前播放。", "neutral");
+                }
+
+                function buildDailyScript() {
+                    return roundQueue.value.map((item, index) => {
+                        return [
+                            `${index + 1}. ${item.word}`,
+                            `中文：${item.meaning}`,
+                            `朗读脚本：${item.word}。中文意思，${item.meaning}。`
+                        ].join("\n");
+                    }).join("\n\n");
+                }
+
+                function downloadAudioScript() {
+                    if (!roundQueue.value.length) {
+                        pushToast("当前轮次还没有单词。", "warning");
+                        return;
+                    }
+
+                    const today = new Date().toISOString().slice(0, 10);
+                    const blob = new Blob([buildDailyScript()], { type: "text/plain;charset=utf-8" });
+                    downloadBlob(blob, `gre-daily-script-${today}.txt`);
+                    pushToast("今日朗读脚本已导出。", "success");
+                }
+
+                async function exportDailyAudio() {
+                    if (!roundQueue.value.length) {
+                        pushToast("当前轮次没有可导出的单词。", "warning");
+                        return;
+                    }
+
+                    if (!("speechSynthesis" in window)) {
+                        downloadAudioScript();
+                        pushToast("浏览器不支持语音合成，已改为导出脚本。", "warning");
+                        return;
+                    }
+
+                    if (!navigator.mediaDevices?.getDisplayMedia || !window.MediaRecorder) {
+                        downloadAudioScript();
+                        pushToast("当前浏览器不支持直接录制标签页音频，已改为导出脚本。", "warning");
+                        return;
+                    }
+
+                    const token = audioToken.value + 1;
+                    audioToken.value = token;
+                    isPlayingDaily.value = true;
+                    isExportingAudio.value = true;
+
+                    let displayStream = null;
+                    let recordStream = null;
+
+                    try {
+                        displayStream = await navigator.mediaDevices.getDisplayMedia({
+                            video: true,
+                            audio: true
+                        });
+
+                        if (!displayStream.getAudioTracks().length) {
+                            throw new Error("NO_AUDIO_TRACK");
+                        }
+
+                        recordStream = new MediaStream(displayStream.getAudioTracks());
+                        const mimeType = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+                            ? "audio/webm;codecs=opus"
+                            : "audio/webm";
+                        const recorder = mimeType ? new MediaRecorder(recordStream, { mimeType }) : new MediaRecorder(recordStream);
+                        const chunks = [];
+
+                        recorder.ondataavailable = (event) => {
+                            if (event.data && event.data.size) {
+                                chunks.push(event.data);
+                            }
+                        };
+
+                        const stopped = new Promise((resolve) => {
+                            recorder.onstop = () => resolve();
+                        });
+
+                        recorder.start();
+                        pushToast("开始录制。请保持当前页面在前台。", "neutral");
+
+                        await runDailySpeechSequence(token);
+                        recorder.stop();
+                        await stopped;
+
+                        const today = new Date().toISOString().slice(0, 10);
+                        const blob = new Blob(chunks, { type: mimeType || "audio/webm" });
+                        downloadBlob(blob, `gre-daily-audio-${today}.webm`);
+                        pushToast("今日音频已导出为 webm。", "success");
+                    } catch (error) {
+                        downloadAudioScript();
+
+                        if (error.message === "NO_AUDIO_TRACK") {
+                            pushToast("没有录到标签页音频。请选择“当前标签页”并勾选共享音频。", "error");
+                        } else if (error.message !== "ABORTED") {
+                            pushToast("音频导出失败，已自动导出朗读脚本。", "error");
+                        }
+                    } finally {
+                        if ("speechSynthesis" in window) {
+                            window.speechSynthesis.cancel();
+                        }
+
+                        if (recordStream) {
+                            recordStream.getTracks().forEach((track) => track.stop());
+                        }
+
+                        if (displayStream) {
+                            displayStream.getTracks().forEach((track) => track.stop());
+                        }
+
+                        if (token === audioToken.value) {
+                            isPlayingDaily.value = false;
+                            isExportingAudio.value = false;
+                        }
+                    }
+                }
+
+                function handleTouchStart(event) {
+                    touchStartX.value = event.changedTouches[0]?.clientX || 0;
+                }
+
+                function handleTouchEnd(event) {
+                    const endX = event.changedTouches[0]?.clientX || 0;
+                    const delta = endX - touchStartX.value;
+
+                    if (Math.abs(delta) >= SWIPE_THRESHOLD) {
+                        suppressTapUntil.value = Date.now() + 320;
+                        nextWord();
+                    }
+                }
+
+                function handleKeydown(event) {
+                    const tag = event.target?.tagName?.toLowerCase();
+                    if (tag === "textarea" || tag === "input") return;
+
+                    if (event.key === "ArrowRight" || event.key === " ") {
+                        event.preventDefault();
+                        nextWord();
+                    }
+
+                    if (event.key.toLowerCase() === "r") {
+                        event.preventDefault();
+                        speakCurrentWord(true);
+                    }
+
+                    if (event.key.toLowerCase() === "u") {
+                        event.preventDefault();
+                        markCurrentAsFocus();
+                    }
+
+                    if (event.key.toLowerCase() === "f") {
+                        event.preventDefault();
+                        markCurrentAsFamiliar();
+                    }
+
+                    if (event.key.toLowerCase() === "l") {
+                        event.preventDefault();
+                        moveCurrentToLowFrequency();
+                    }
+                }
+
+                watch(currentWord, (newWord, oldWord) => {
+                    if (!newWord) return;
+                    if (newWord.id === oldWord?.id) return;
+
+                    nextTick(() => {
+                        speakCurrentWord();
+                    });
+                }, { immediate: true });
+
+                watch(showAddModal, (visible) => {
+                    if (visible) {
+                        showQuickActions.value = false;
+                    }
+                    if (visible) {
+                        nextTick(() => {
+                            addTextarea.value?.focus();
+                        });
+                    }
+                });
+
+                watch(showLibrary, (visible) => {
+                    if (visible) {
+                        showQuickActions.value = false;
+                    }
+                });
+
+                watch(showAudioModal, (visible) => {
+                    if (visible) {
+                        showQuickActions.value = false;
+                    }
+                });
+
+                onMounted(() => {
+                    migrateLegacyDefaultBank();
+
+                    if (words.value.length && !wordBanks.value.length) {
+                        const fallbackBuiltinBank = builtInBanks.value[0];
+                        const fallbackBank = ensureBankRecord({
+                            id: fallbackBuiltinBank?.id || "default-bank",
+                            name: fallbackBuiltinBank?.name || "当前词库",
+                            sourceType: fallbackBuiltinBank ? "builtin" : "migration"
+                        });
+                        words.value.forEach((word) => {
+                            if (!(word.bankIds || []).length) {
+                                word.bankIds = [fallbackBank.id];
+                            }
+                        });
+                    }
+
+                    if (!words.value.length && builtInBanks.value.length) {
+                        const defaultBank = builtInBanks.value[0];
+                        const entries = (defaultBank.items || []).map((item) => ({
+                            word: item[0],
+                            meaning: item[1],
+                            phonetic: item[2]
+                        }));
+                        const bankRecord = ensureBankRecord({
+                            id: defaultBank.id,
+                            name: defaultBank.name,
+                            sourceType: "builtin"
+                        });
+                        const result = mergeEntries(entries, {
+                            bankId: bankRecord.id,
+                            sourceType: "builtin",
+                            sourceName: defaultBank.name
+                        });
+                        if (result.added) {
+                            pushToast(`首次打开已自动载入 ${defaultBank.name}。`, "success");
+                        }
+                    }
+
+                    persistWords();
+                    persistBanks();
+                    persistActiveBanks();
+                    ensureQueue();
+                    ensureVoices();
+                    window.addEventListener("keydown", handleKeydown);
+                    document.addEventListener("click", handleDocumentClick);
+
+                    if ("serviceWorker" in navigator && location.protocol !== "file:") {
+                        navigator.serviceWorker.register("./sw.js").catch(() => {});
+                    }
+
+                    if (!("speechSynthesis" in window)) {
+                        pushToast("当前浏览器不支持发音功能。", "warning");
+                    }
+                });
+
+                onBeforeUnmount(() => {
+                    if (toast.timer) clearTimeout(toast.timer);
+                    window.removeEventListener("keydown", handleKeydown);
+                    document.removeEventListener("click", handleDocumentClick);
+                    if ("speechSynthesis" in window) {
+                        window.speechSynthesis.cancel();
+                    }
+                });
+
+                return {
+                    words,
+                    sessionRound,
+                    currentIndex,
+                    roundQueue,
+                    currentWord,
+                    builtInBanks,
+                    wordBanks,
+                    bankSummaries,
+                    activeBankIds,
+                    themeBrandTag,
+                    themeBrandCopy,
+                    currentBankTitle,
+                    progressPercent,
+                    remainingCount,
+                    normalCount,
+                    lowCount,
+                    formattedDate,
+                    todayAudioTitle,
+                    audioHint,
+                    showQuickActions,
+                    showAddModal,
+                    showLibrary,
+                    showAudioModal,
+                    newWordsInput,
+                    libraryKeyword,
+                    importMode,
+                    importTargetBankId,
+                    importBankName,
+                    importDragOver,
+                    importPreview,
+                    selectedBankIds,
+                    filteredWords,
+                    isPlayingDaily,
+                    isExportingAudio,
+                    toast,
+                    addTextarea,
+                    importFileInput,
+                    closeAddModal,
+                    addWords,
+                    importBuiltInBank,
+                    toggleQuickActions,
+                    openAddModalFromQuickActions,
+                    openImportPickerFromQuickActions,
+                    openImportPicker,
+                    handleImportInput,
+                    handleImportDragOver,
+                    handleImportDragLeave,
+                    handleImportDrop,
+                    applyImportPreview,
+                    clearImportPreview,
+                    toggleBankSelection,
+                    toggleBankActive,
+                    focusSingleBank,
+                    resetActiveBanks,
+                    mergeSelectedBanks,
+                    splitBank,
+                    markCurrentAsFocus,
+                    markCurrentAsFamiliar,
+                    nextWord,
+                    goNextFromTap,
+                    moveCurrentToLowFrequency,
+                    moveWordToLowFrequency,
+                    restoreWord,
+                    formatPhonetic,
+                    getWordStateLabel,
+                    getWordStateClass,
+                    getWordFrequencyHint,
+                    speakCurrentWord,
+                    playDailyAudio,
+                    stopDailyPlayback,
+                    exportDailyAudio,
+                    downloadAudioScript,
+                    handleTouchStart,
+                    handleTouchEnd
+                };
+            }
+        }).mount("#app");
+    </script>
+</body>
+</html>

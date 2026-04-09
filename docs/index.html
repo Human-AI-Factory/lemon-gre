@@ -1,0 +1,339 @@
+        <!DOCTYPE html>
+        <html lang="zh-CN">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <meta name="theme-color" content="#a5cf5b">
+          <meta name="description" content="Lemon GRE：图文并茂的 GRE 背词神器宣传站，支持在线体验、主题试听和 GitHub 免费下载。">
+          <meta property="og:title" content="Lemon GRE 背词神器">
+          <meta property="og:description" content="六款主题、顺序刷词、熟词低频召回、今日音频、Excel 直接导入。">
+          <meta property="og:image" content="./assets/og-cover.png">
+          <title>Lemon GRE | GRE 背词神器</title>
+          <link rel="icon" href="./assets/favicon.png" type="image/png">
+          <link rel="preconnect" href="https://fonts.googleapis.com">
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+          <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+          <link rel="stylesheet" href="./styles.css">
+        </head>
+        <body>
+          <div class="page-shell">
+            <header class="topbar">
+              <a class="brand" href="#hero">
+                <span class="brand-mark">L</span>
+                <span class="brand-text">Lemon GRE</span>
+              </a>
+              <nav class="nav">
+                <a href="#features">玩法亮点</a>
+                <a href="#themes">主题版本</a>
+                <a href="#downloads">免费下载</a>
+                <a href="./app/index.html">在线体验</a>
+              </nav>
+            </header>
+
+            <main>
+              <section class="hero" id="hero">
+                <div class="hero-copy">
+                  <div class="eyebrow">GRE Vocab, But Finally Fun</div>
+                  <h1 class="hero-title">背 GRE 单词，不要再像罚抄。</h1>
+                  <p class="hero-text">Lemon GRE 把背词拆成一页一词的顺序流：到页即发音、点击滑动翻页、熟词低频召回、Excel 拖进来就能学，还能导出今日音频。现在它不止能用，还做成了 6 款主题版本，直接从 GitHub 免费下载。</p>
+                  <div class="hero-actions">
+                    <a class="primary-cta" href="#downloads">免费下载 App</a>
+                    <a class="secondary-cta" href="./app/index.html">在线体验网页版</a>
+                  </div>
+                  <div class="stat-row" id="stat-row"></div>
+                </div>
+
+                <aside class="spotlight" id="spotlight">
+                  <div class="spotlight-media">
+                    <img id="spotlight-image" alt="Lemon GRE 主题封面">
+                    <div class="floating-chip" id="spotlight-chip">Theme Pack</div>
+                  </div>
+                  <div class="spotlight-body">
+                    <div class="spotlight-label">主题主打</div>
+                    <h2 id="spotlight-title"></h2>
+                    <p id="spotlight-copy"></p>
+                    <div class="voice-tags" id="spotlight-voices"></div>
+                    <div class="spotlight-actions">
+                      <button id="spotlight-audio" class="mini-cta" type="button">试听主题音色</button>
+                      <a id="spotlight-download" class="mini-cta strong" href="">下载 macOS 版</a>
+                    </div>
+                    <audio id="spotlight-player" preload="none" controls></audio>
+                  </div>
+                </aside>
+              </section>
+
+              <section class="feature-section" id="features">
+                <div class="section-heading">
+                  <p class="eyebrow">Why It Hits</p>
+                  <h2>不是“又一个背单词工具”，而是一套更顺手的复习节奏。</h2>
+                </div>
+                <div class="feature-grid" id="feature-grid"></div>
+              </section>
+
+              <section class="showcase">
+                <div class="showcase-card live-demo">
+                  <div>
+                    <p class="eyebrow">Live Demo</p>
+                    <h3>GitHub Pages 上直接打开就能背</h3>
+                    <p>站点里内置了在线体验版。手机上直接打开网页，Safari / Chrome 都可以继续走添加到主屏幕这条路。</p>
+                  </div>
+                  <div class="showcase-actions">
+                    <a class="primary-cta small" href="./app/index.html">立刻试玩</a>
+                    <a class="secondary-cta small" href="#downloads">看下载版本</a>
+                  </div>
+                </div>
+                <div class="showcase-card mood-board">
+                  <p class="eyebrow">Theme Mixer</p>
+                  <h3>六种风格，不止换皮，连默认音色都换了。</h3>
+                  <div class="theme-orbit" id="theme-orbit"></div>
+                </div>
+              </section>
+
+              <section class="themes-section" id="themes">
+                <div class="section-heading">
+                  <p class="eyebrow">Theme Gallery</p>
+                  <h2>选你最愿意每天打开的那一版。</h2>
+                </div>
+                <div class="theme-grid" id="theme-grid"></div>
+              </section>
+
+              <section class="download-section" id="downloads">
+                <div class="section-heading">
+                  <p class="eyebrow">Free Downloads</p>
+                  <h2>安装包就托管在这个 GitHub 站点里，点下去直接拿。</h2>
+                </div>
+                <div class="download-layout">
+                  <div class="download-copy">
+                    <p>当前最完整的是 macOS 版，每个主题都有独立 <code>dmg</code>。如果你想先在手机上试，直接点“在线体验网页版”就行，再按浏览器提示加入主屏幕。</p>
+                    <ul class="download-notes">
+                      <li>Mac：直接下载 <code>dmg</code>，拖进应用程序就能用。</li>
+                      <li>iPhone / Android：打开网页体验版，安装到主屏幕。</li>
+                      <li>GitHub 托管：网站、试听和安装包都可以随仓库一起发布。</li>
+                    </ul>
+                  </div>
+                  <div class="download-cards" id="download-cards"></div>
+                </div>
+              </section>
+
+              <section class="faq-section">
+                <div class="section-heading">
+                  <p class="eyebrow">FAQ</p>
+                  <h2>几个你大概率会被问到的问题。</h2>
+                </div>
+                <div class="faq-list">
+                  <article>
+                    <h3>它和普通抽认卡最大区别是什么？</h3>
+                    <p>不是随机乱飞的卡片流，而是顺序推进的一页一词。你会明显感觉自己在完整地刷完一轮，再靠熟悉度把节奏调顺。</p>
+                  </article>
+                  <article>
+                    <h3>熟词会不会直接消失？</h3>
+                    <p>不会。它只会进入“低频召回”，你太熟的词以后还是会回来，只是间隔更长，避免浪费注意力。</p>
+                  </article>
+                  <article>
+                    <h3>能不能自己加词表？</h3>
+                    <p>可以。Excel、CSV、TXT 都支持，拖进去就能扩充；还可以新建词库、合并词库和拆分词库。</p>
+                  </article>
+                </div>
+              </section>
+            </main>
+
+            <footer class="footer">
+              <p>Lemon GRE · GitHub Pages 宣传站</p>
+              <p>推到 GitHub 后，把 Pages 的发布目录指向 <code>/docs</code> 即可上线。</p>
+            </footer>
+          </div>
+
+          <script id="site-data" type="application/json">{
+  "repoName": "Lemon GRE",
+  "heroTitle": "背 GRE 单词，不要再像罚抄。",
+  "heroCopy": "Lemon GRE 把背词拆成一页一词的顺序流：到页即发音、点击滑动翻页、熟词低频召回、Excel 拖进来就能学，还能导出今日音频。现在它不止能用，还做成了 6 款主题版本，直接从 GitHub 免费下载。",
+  "stats": [
+    {
+      "value": "3041",
+      "label": "内置 GRE 词"
+    },
+    {
+      "value": "1 页 1 词",
+      "label": "顺序翻页背"
+    },
+    {
+      "value": "Excel",
+      "label": "拖拽导入"
+    },
+    {
+      "value": "6 款",
+      "label": "主题版本"
+    }
+  ],
+  "features": [
+    {
+      "title": "顺序刷词，不乱跳",
+      "copy": "每个单词都是单独一页，点击或滑动就往下走。你能明显感受到一轮一轮往前推，而不是被算法随便打散。",
+      "icon": "stack"
+    },
+    {
+      "title": "熟悉度调频",
+      "copy": "不熟悉就多出现，熟悉就稍后出现，太熟了就低频召回。不是简单删掉，而是按记忆状态调整出现频率。",
+      "icon": "dial"
+    },
+    {
+      "title": "随时加词表",
+      "copy": "支持手动粘贴、拖拽 Excel / CSV / TXT、拆分词库、合并词库。新词会直接进当前学习队列，不需要重开。",
+      "icon": "spark"
+    },
+    {
+      "title": "今日音频",
+      "copy": "整轮单词和中文释义可以连续朗读，还能导出脚本或录制成音频，适合通勤和睡前复习。",
+      "icon": "wave"
+    }
+  ],
+  "themes": [
+    {
+      "name": "清爽柠檬",
+      "slug": "qing-shuang-ning-meng",
+      "displayName": "Lemon GRE - 清爽柠檬",
+      "displayTitle": "Lemon GRE · 清爽柠檬",
+      "copy": "像咬开一片冰镇柠檬一样清醒，单词按顺序回来，熟词只做低频召回。",
+      "cover": "./assets/themes/qing-shuang-ning-meng-cover.png",
+      "audio": "./assets/audio/qing-shuang-ning-meng.wav",
+      "download": "./downloads/qing-shuang-ning-meng.dmg",
+      "size": "2.0 MB",
+      "voicesEn": [
+        "Samantha",
+        "Eddy (英语（美国）)",
+        "Reed (英语（美国）)"
+      ],
+      "voicesZh": [
+        "Tingting",
+        "Eddy (中文（中国大陆）)",
+        "Reed (中文（中国大陆）)"
+      ],
+      "accent": "#9fca57",
+      "accentSoft": "#ffd75d",
+      "background": "#f7f4de"
+    },
+    {
+      "name": "烟熏玫瑰",
+      "slug": "yan-xun-mei-gui",
+      "displayName": "Lemon GRE - 烟熏玫瑰",
+      "displayTitle": "Lemon GRE · 烟熏玫瑰",
+      "copy": "暗红、烟紫和一点夜色，把单词背成一张带香气的复古卡片。",
+      "cover": "./assets/themes/yan-xun-mei-gui-cover.png",
+      "audio": "./assets/audio/yan-xun-mei-gui.wav",
+      "download": "./downloads/yan-xun-mei-gui.dmg",
+      "size": "1.7 MB",
+      "voicesEn": [
+        "Moira",
+        "Karen",
+        "Eddy (英语（英国）)"
+      ],
+      "voicesZh": [
+        "Meijia",
+        "Sandy (中文（台湾）)",
+        "Flo (中文（台湾）)"
+      ],
+      "accent": "#b56f86",
+      "accentSoft": "#f2a2bc",
+      "background": "#2c1825"
+    },
+    {
+      "name": "魅力樱桃",
+      "slug": "mei-li-ying-tao",
+      "displayName": "Lemon GRE - 魅力樱桃",
+      "displayTitle": "Lemon GRE · 魅力樱桃",
+      "copy": "高饱和樱桃红配一点俏皮感，让单词像糖渍果子一样更容易记住。",
+      "cover": "./assets/themes/mei-li-ying-tao-cover.png",
+      "audio": "./assets/audio/mei-li-ying-tao.wav",
+      "download": "./downloads/mei-li-ying-tao.dmg",
+      "size": "1.9 MB",
+      "voicesEn": [
+        "Karen",
+        "Samantha",
+        "Flo (英语（美国）)"
+      ],
+      "voicesZh": [
+        "Flo (中文（中国大陆）)",
+        "Tingting",
+        "Eddy (中文（中国大陆）)"
+      ],
+      "accent": "#ff4f7d",
+      "accentSoft": "#ff94b5",
+      "background": "#fff1f4"
+    },
+    {
+      "name": "阳光海盐",
+      "slug": "yang-guang-hai-yan",
+      "displayName": "Lemon GRE - 阳光海盐",
+      "displayTitle": "Lemon GRE · 阳光海盐",
+      "copy": "海风、阳光和盐粒感的配色，会把这套背词页面拉得更明亮也更松弛。",
+      "cover": "./assets/themes/yang-guang-hai-yan-cover.png",
+      "audio": "./assets/audio/yang-guang-hai-yan.wav",
+      "download": "./downloads/yang-guang-hai-yan.dmg",
+      "size": "1.9 MB",
+      "voicesEn": [
+        "Daniel",
+        "Eddy (英语（英国）)",
+        "Reed (英语（英国）)"
+      ],
+      "voicesZh": [
+        "Reed (中文（中国大陆）)",
+        "Eddy (中文（中国大陆）)",
+        "Tingting"
+      ],
+      "accent": "#55c2df",
+      "accentSoft": "#ffd36b",
+      "background": "#fff7dd"
+    },
+    {
+      "name": "柴柴老头",
+      "slug": "chai-chai-lao-tou",
+      "displayName": "Lemon GRE - 柴柴老头",
+      "displayTitle": "Lemon GRE · 柴柴老头",
+      "copy": "暖木色、柴犬脸和一点老派气质，让这版更像一位会碎碎念的背词搭子。",
+      "cover": "./assets/themes/chai-chai-lao-tou-cover.png",
+      "audio": "./assets/audio/chai-chai-lao-tou.wav",
+      "download": "./downloads/chai-chai-lao-tou.dmg",
+      "size": "1.9 MB",
+      "voicesEn": [
+        "Grandpa (英语（美国）)",
+        "Grandma (英语（美国）)",
+        "Ralph"
+      ],
+      "voicesZh": [
+        "Grandpa (中文（中国大陆）)",
+        "Grandma (中文（中国大陆）)",
+        "Tingting"
+      ],
+      "accent": "#d88f4d",
+      "accentSoft": "#ffcf88",
+      "background": "#fff4e6"
+    },
+    {
+      "name": "机械小子",
+      "slug": "ji-xie-xiao-zi",
+      "displayName": "Lemon GRE - 机械小子",
+      "displayTitle": "Lemon GRE · 机械小子",
+      "copy": "硬朗的金属蓝和发光面板，把背词做成一台会说话的小型学习机器。",
+      "cover": "./assets/themes/ji-xie-xiao-zi-cover.png",
+      "audio": "./assets/audio/ji-xie-xiao-zi.wav",
+      "download": "./downloads/ji-xie-xiao-zi.dmg",
+      "size": "1.7 MB",
+      "voicesEn": [
+        "Zarvox",
+        "Eddy (英语（美国）)",
+        "Reed (英语（美国）)"
+      ],
+      "voicesZh": [
+        "Rocko (中文（中国大陆）)",
+        "Eddy (中文（中国大陆）)",
+        "Reed (中文（中国大陆）)"
+      ],
+      "accent": "#34c9eb",
+      "accentSoft": "#61e3ff",
+      "background": "#0e1624"
+    }
+  ]
+}</script>
+          <script src="./site.js"></script>
+        </body>
+        </html>

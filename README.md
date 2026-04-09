@@ -15,6 +15,8 @@ python3 -m http.server 4173
 
 然后访问 `http://localhost:4173/index.html`。
 
+如果你已经开过旧版本页面，但没看到新的“导入词表”按钮，先强制刷新一次；PWA / service worker 场景下旧页面可能被缓存。
+
 说明：
 
 - 单词数据保存在浏览器 `localStorage`
